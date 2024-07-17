@@ -1,11 +1,43 @@
-package com.msa2024.user;
+package com.msa2024.user.model;
 
+import java.util.List;
 import java.util.Scanner;
+import com.msa2024.user.service.UserService;
 
 public class UserManager {
   
+    private UserService userService;
+
+    public UserManager(UserService userService) {
+        this.userService = userService;
+    }
+
+    public void loadUsers(String filePath) {
+      userService.loadUsersSignUpFile(filePath);
+    }
+
+    public void registerUser(String email, String name, String password, Role role) {
+        userService.register(email, name, password, role);
+    }
+
+    public User loginUser(String email, String password) {
+        return userService.login(email, password);
+    }
+
+    public void logoutUser(String email) {
+        userService.logout(email);
+    }
+
+    public void reportUser(String email) {
+        userService.reportUser(email);
+    }
+
+    public List<User> listUsers() {
+        return userService.getUsers();
+    }
+}
   
-  
+  /*
   public void signUp() {
     Scanner sc = new Scanner(System.in);
     System.out.println("\n=================================================================\n");
@@ -36,10 +68,10 @@ public class UserManager {
     System.out.println("로그인 되었습니다!!");
     
   }
-  
+  */
   
   
   
   
 
-}
+
