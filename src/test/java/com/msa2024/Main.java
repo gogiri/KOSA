@@ -11,9 +11,10 @@ import java.util.Scanner;
 
 public class Main {
 
-
     public static void main(String[] args) {
+        // GenericFileUtil 인스턴스 초기화
         GenericFileUtil<String> fileUtil = new GenericFileUtil<>();
+
         String filename = "students.json";
         List<User> users = new ArrayList<>();
         users.add(new User("관리자", "010-0000-0000", "admin", "admin"));
@@ -22,7 +23,6 @@ public class Main {
         AdminManager adminManager = new AdminManager(userManager);
 
         Scanner scanner = new Scanner(System.in);
-
 
         while (true) {
             System.out.println("1. 로그인");
@@ -48,10 +48,11 @@ public class Main {
                             System.out.println("5. 블랙리스트 출력");
                             System.out.println("6. 공지사항 추가");
                             System.out.println("7. 공지사항 목록 보기");
-                            System.out.println("8. 사용자 활동 로그 보기");
-                            System.out.println("9. 사용자 차단 해제");
-                            System.out.println("10. 노쇼 확인 및 차단");
-                            System.out.println("11. 로그아웃");
+                            System.out.println("8. 방 추가");
+                            System.out.println("9. 사용자 활동 로그 보기");
+                            System.out.println("10. 사용자 차단 해제");
+                            System.out.println("11. 노쇼 확인 및 차단");
+                            System.out.println("12. 로그아웃");
                             int adminChoice = scanner.nextInt();
                             scanner.nextLine();  // 개행 문자 제거
 
@@ -83,14 +84,18 @@ public class Main {
                             } else if (adminChoice == 7) {
                                 adminManager.listAnnouncements();
                             } else if (adminChoice == 8) {
-                                adminManager.listActivityLogs();
+                                System.out.print("추가할 방 이름: ");
+                                String roomName = scanner.nextLine();
+                                adminManager.addRoom(roomName);
                             } else if (adminChoice == 9) {
+                                adminManager.listActivityLogs();
+                            } else if (adminChoice == 10) {
                                 System.out.print("차단 해제할 사용자 이메일: ");
                                 String unblockEmail = scanner.nextLine();
                                 adminManager.unblockUser(unblockEmail);
-                            } else if (adminChoice == 10) {
-                                adminManager.checkNoShows();
                             } else if (adminChoice == 11) {
+                                adminManager.checkNoShows();
+                            } else if (adminChoice == 12) {
                                 break;
                             } else {
                                 System.out.println("잘못된 선택입니다. 다시 시도해주세요.");
@@ -111,5 +116,6 @@ public class Main {
         scanner.close();
         userManager.saveUsers(); // 프로그램 종료 시 사용자 데이터 저장
         fileUtil.writeToFile("announcements.json", adminManager.getAnnouncements()); // 프로그램 종료 시 공지사항 데이터 저장
+        fileUtil.writeToFile("rooms.json", adminManager.getRooms()); // 프로그램 종료 시 방 데이터 저장
     }
 }

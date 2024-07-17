@@ -7,11 +7,19 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 public class GenericFileUtil<T> implements FileUtil<T> {
-    private static final String BASE_PATH = "src/test/resources/";
+    private String basePath;
+
+    public GenericFileUtil() {
+        this.basePath = "src/test/resources/";
+    }
+
+    public GenericFileUtil(String basePath) {
+        this.basePath = basePath;
+    }
 
     @Override
     public void writeToFile(String filename, List<T> items) {
-        try (Writer writer = new FileWriter(BASE_PATH + filename)) {
+        try (Writer writer = new FileWriter(basePath + filename)) {
             Gson gson = new Gson();
             gson.toJson(items, writer);
         } catch (IOException e) {
@@ -21,9 +29,14 @@ public class GenericFileUtil<T> implements FileUtil<T> {
 
     @Override
     public List<T> readFromFile(String filename) {
-        try (Reader reader = new FileReader(BASE_PATH + filename)) {
+        return null;
+    }
+
+    @Override
+    public List<T> readFromFile(String filename, TypeToken<List<T>> typeToken) {
+        try (Reader reader = new FileReader(basePath + filename)) {
             Gson gson = new Gson();
-            return gson.fromJson(reader, new TypeToken<List<T>>() {}.getType());
+            return gson.fromJson(reader, typeToken.getType());
         } catch (FileNotFoundException e) {
             System.out.println("File not found: " + filename + ". Returning empty list.");
             return new ArrayList<>();

@@ -3,6 +3,7 @@ package com.msa2024.admin.controller;
 import com.msa2024.user.User;
 import com.msa2024.user.UserManager;
 import com.msa2024.util.GenericFileUtil;
+import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -15,17 +16,22 @@ public class AdminManager {
 
     // 공지사항
     private List<String> announcements;
+    private List<String> rooms;
     private GenericFileUtil<String> fileUtil;
-    //
     private List<String> activityLogs = new ArrayList<>(); // 활동 로그 목록
     private static final String ANNOUNCEMENTS_FILE = "announcements.json";
+    private static final String ROOMS_FILE = "rooms.json";
 
     public AdminManager(UserManager userManager) {
         this.userManager = userManager;
         this.fileUtil = new GenericFileUtil<>();
-        this.announcements = fileUtil.readFromFile(ANNOUNCEMENTS_FILE);
+        this.announcements = fileUtil.readFromFile(ANNOUNCEMENTS_FILE, new TypeToken<List<String>>() {});
+        this.rooms = fileUtil.readFromFile(ROOMS_FILE, new TypeToken<List<String>>() {});
         if (this.announcements == null) {
             this.announcements = new ArrayList<>();
+        }
+        if (this.rooms == null) {
+            this.rooms = new ArrayList<>();
         }
     }
 
@@ -42,6 +48,13 @@ public class AdminManager {
         for (String announcement : announcements) {
             System.out.println("- " + announcement);
         }
+    }
+
+    // 방 추가
+    public void addRoom(String roomName) {
+        rooms.add(roomName);
+        fileUtil.writeToFile(ROOMS_FILE, rooms);
+        System.out.println("방이 추가되었습니다.");
     }
 
     // 모든 회원 출력
@@ -135,5 +148,9 @@ public class AdminManager {
 
     public List<String> getAnnouncements() {
         return announcements;
+    }
+
+    public List<String> getRooms() {
+        return rooms;
     }
 }
