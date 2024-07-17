@@ -9,6 +9,7 @@ import com.msa2024.user.UserManager;
 
 public class Main {
     public static void main(String[] args) {
+<<<<<<< HEAD
     
         // TODO Auto-generated method stub
         //System.out.println("===== START =====");
@@ -82,5 +83,8 @@ public class Main {
         }
         sc.close();
         System.out.println("\n===== END =====");
+=======
+        System.out.println("Hello world!!");
+>>>>>>> f8c729bfa924a1d60b65762a087050b44d30c62a
     }
 }

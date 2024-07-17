@@ -1,3 +1,4 @@
+
 package com.msa2024.user;
 
 import java.time.LocalDate;
@@ -94,3 +95,6 @@ public class User {
 
 
 }
+
+
+
