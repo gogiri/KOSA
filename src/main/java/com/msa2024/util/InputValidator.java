@@ -17,4 +17,8 @@ public class InputValidator {
     public static boolean isValidRole(String role) {
         return "student".equals(role) || "professor".equals(role) || "admin".equals(role);
     }
+
+    public static boolean isValidPhoneNumber(String phoneNumber) {
+        return phoneNumber != null && phoneNumber.matches("^(010|012)-\\d{4}-\\d{4}$");
+    }
 }
