@@ -1,3 +1,5 @@
+package com.msa2024.util;
+
 import java.io.*;
 
 public class FileUtil {
