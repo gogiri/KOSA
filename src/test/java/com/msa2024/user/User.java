@@ -10,6 +10,7 @@ public class User implements Serializable {
     private String password;
     private Date blockedUntil;
     private int noShowCount;
+    private int blockCount; // 차단 횟수
 
     public User(String name, String phoneNumber, String email, String password) {
         this.name = name;
@@ -18,6 +19,7 @@ public class User implements Serializable {
         this.password = password;
         this.blockedUntil = null;
         this.noShowCount = 0;
+        this.blockCount = 0; // 초기화: 차단 횟수
     }
 
     // getters and setters
@@ -71,5 +73,17 @@ public class User implements Serializable {
 
     public void incrementNoShowCount() {
         this.noShowCount++;
+    }
+
+    public int getBlockCount() {
+        return blockCount;
+    }
+
+    public void setBlockCount(int blockCount) {
+        this.blockCount = blockCount;
+    }
+
+    public void incrementBlockCount() {
+        this.blockCount++;
     }
 }

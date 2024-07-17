@@ -3,27 +3,26 @@ package com.msa2024;
 import com.msa2024.admin.controller.AdminManager;
 import com.msa2024.user.User;
 import com.msa2024.user.UserManager;
-import com.msa2024.util.FileUtil;
+import com.msa2024.util.GenericFileUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 public class Main {
+
+
     public static void main(String[] args) {
+        GenericFileUtil<String> fileUtil = new GenericFileUtil<>();
         String filename = "students.json";
         List<User> users = new ArrayList<>();
         users.add(new User("관리자", "010-0000-0000", "admin", "admin"));
-
-        List<User> loadedUsers = FileUtil.readFromFile(filename);
-        if (loadedUsers != null) {
-            users.addAll(loadedUsers);
-        }
 
         UserManager userManager = new UserManager(users);
         AdminManager adminManager = new AdminManager(userManager);
 
         Scanner scanner = new Scanner(System.in);
+
 
         while (true) {
             System.out.println("1. 로그인");
@@ -110,5 +109,7 @@ public class Main {
         }
 
         scanner.close();
+        userManager.saveUsers(); // 프로그램 종료 시 사용자 데이터 저장
+        fileUtil.writeToFile("announcements.json", adminManager.getAnnouncements()); // 프로그램 종료 시 공지사항 데이터 저장
     }
 }

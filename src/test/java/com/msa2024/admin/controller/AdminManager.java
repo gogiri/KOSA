@@ -2,7 +2,7 @@ package com.msa2024.admin.controller;
 
 import com.msa2024.user.User;
 import com.msa2024.user.UserManager;
-import com.msa2024.util.FileUtil;
+import com.msa2024.util.GenericFileUtil;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -12,14 +12,18 @@ import java.util.concurrent.TimeUnit;
 
 public class AdminManager {
     private UserManager userManager;
-    private List<String> announcements;
-    private List<String> activityLogs = new ArrayList<>(); // 활동 로그 목록
 
+    // 공지사항
+    private List<String> announcements;
+    private GenericFileUtil<String> fileUtil;
+    //
+    private List<String> activityLogs = new ArrayList<>(); // 활동 로그 목록
     private static final String ANNOUNCEMENTS_FILE = "announcements.json";
 
     public AdminManager(UserManager userManager) {
         this.userManager = userManager;
-        this.announcements = FileUtil.readAnnouncementsFromFile(ANNOUNCEMENTS_FILE);
+        this.fileUtil = new GenericFileUtil<>();
+        this.announcements = fileUtil.readFromFile(ANNOUNCEMENTS_FILE);
         if (this.announcements == null) {
             this.announcements = new ArrayList<>();
         }
@@ -28,7 +32,7 @@ public class AdminManager {
     // 공지사항 추가
     public void addAnnouncement(String announcement) {
         announcements.add(announcement);
-        FileUtil.writeAnnouncementsToFile(ANNOUNCEMENTS_FILE, announcements);
+        fileUtil.writeToFile(ANNOUNCEMENTS_FILE, announcements);
         System.out.println("공지사항이 추가되었습니다.");
     }
 
@@ -51,7 +55,8 @@ public class AdminManager {
         if (user != null) {
             Date blockedUntil = new Date(System.currentTimeMillis() + TimeUnit.HOURS.toMillis(hours));
             user.setBlockedUntil(blockedUntil);
-            userManager.saveUsersToFile();
+            user.incrementBlockCount();
+            userManager.saveUsers();
             System.out.println("사용자 " + email + "이 " + blockedUntil + "까지 차단되었습니다.");
         } else {
             System.out.println("사용자를 찾을 수 없습니다.");
@@ -63,7 +68,7 @@ public class AdminManager {
         User user = userManager.getUser(email);
         if (user != null) {
             user.setBlockedUntil(null);
-            userManager.saveUsersToFile();
+            userManager.saveUsers();
             System.out.println("사용자 " + email + "의 차단이 해제되었습니다.");
         } else {
             System.out.println("사용자를 찾을 수 없습니다.");
@@ -76,7 +81,7 @@ public class AdminManager {
         for (User user : users.values()) {
             if (user.getBlockedUntil() != null && new Date().after(user.getBlockedUntil())) {
                 user.setBlockedUntil(null);
-                userManager.saveUsersToFile();
+                userManager.saveUsers();
                 System.out.println("사용자 " + user.getEmail() + "의 차단이 자동으로 해제되었습니다.");
             }
         }
@@ -98,7 +103,7 @@ public class AdminManager {
         if (user != null) {
             if (newName != null && !newName.isEmpty()) user.setName(newName);
             if (newPassword != null && !newPassword.isEmpty()) user.setPassword(newPassword);
-            userManager.saveUsersToFile();
+            userManager.saveUsers();
             System.out.println("사용자 정보가 업데이트되었습니다.");
         } else {
             System.out.println("사용자를 찾을 수 없습니다.");
@@ -110,7 +115,7 @@ public class AdminManager {
         HashMap<String, User> users = userManager.getAllUsers();
         for (User user : users.values()) {
             if (user.getBlockedUntil() != null) {
-                System.out.println("이메일: " + user.getEmail() + ", 이름: " + user.getName() + ", 차단된 시간: " + user.getBlockedUntil());
+                System.out.println("이메일: " + user.getEmail() + ", 이름: " + user.getName() + ", 차단된 시간: " + user.getBlockedUntil() + ", 차단 횟수: " + user.getBlockCount());
             }
         }
     }
@@ -126,5 +131,9 @@ public class AdminManager {
         for (String log : activityLogs) {
             System.out.println("- " + log);
         }
+    }
+
+    public List<String> getAnnouncements() {
+        return announcements;
     }
 }

@@ -1,16 +1,19 @@
 package com.msa2024.user;
 
-import com.msa2024.util.FileUtil;
-
 import java.util.List;
 import java.util.HashMap;
+import com.msa2024.util.GenericFileUtil;
 
 public class UserManager {
     private List<User> users;
     private User currentUser;
+    private static final String USERS_FILE = "students.json";
+    private GenericFileUtil<User> fileUtil;
 
     public UserManager(List<User> users) {
         this.users = users;
+        this.fileUtil = new GenericFileUtil<>();
+        loadUsers();
     }
 
     public boolean login(String email, String password) {
@@ -38,8 +41,21 @@ public class UserManager {
         return null;
     }
 
-    public void saveUsersToFile() {
-        FileUtil.writeToFile("students.json", users);
+    public void saveUsers() {
+        fileUtil.writeToFile(USERS_FILE, users);
+    }
+
+    public void loadUsers() {
+        List<User> loadedUsers = fileUtil.readFromFile(USERS_FILE);
+        if (loadedUsers != null) {
+            users.addAll(loadedUsers);
+        }
+    }
+
+    public void printAllUsers() {
+        for (User user : users) {
+            System.out.println("이름: " + user.getName() + ", 이메일: " + user.getEmail() + ", 전화번호: " + user.getPhoneNumber());
+        }
     }
 
     public HashMap<String, User> getAllUsers() {
@@ -48,11 +64,5 @@ public class UserManager {
             userMap.put(user.getEmail(), user);
         }
         return userMap;
-    }
-
-    public void printAllUsers() {
-        for (User user : users) {
-            System.out.println("이름: " + user.getName() + ", 이메일: " + user.getEmail() + ", 전화번호: " + user.getPhoneNumber());
-        }
     }
 }
