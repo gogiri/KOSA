@@ -1,3 +1,5 @@
+package test;
+
 public class InputValidator {
 
     public static boolean isValidEmail(String email) {
