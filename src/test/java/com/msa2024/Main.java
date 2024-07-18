@@ -1,11 +1,14 @@
 package com.msa2024;
 
 import com.msa2024.admin.controller.AdminManager;
-import com.msa2024.user.User;
-import com.msa2024.user.UserManager;
+import com.msa2024.user.model.Role;
+import com.msa2024.user.model.User;
+import com.msa2024.user.model.UserManager;
+import com.msa2024.user.service.UserServiceImpl;
+import com.msa2024.util.DateUtil;
 import com.msa2024.util.GenericFileUtil;
 
-import java.util.ArrayList;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Scanner;
 
@@ -16,11 +19,14 @@ public class Main {
         GenericFileUtil<String> fileUtil = new GenericFileUtil<>();
 
         String filename = "students.json";
-        List<User> users = new ArrayList<>();
-        users.add(new User("관리자", "010-0000-0000", "admin", "admin"));
-
-        UserManager userManager = new UserManager(users);
+        UserServiceImpl userService = new UserServiceImpl(filename);
+        UserManager userManager = new UserManager(userService);
         AdminManager adminManager = new AdminManager(userManager);
+
+        // 기본 관리자 계정 추가
+        if (userManager.getUserByEmail("admin") == null) {
+            userManager.registerUser("admin", "관리자", "admin", Role.ADMIN);
+        }
 
         Scanner scanner = new Scanner(System.in);
 
@@ -36,9 +42,11 @@ public class Main {
                 System.out.print("비밀번호: ");
                 String password = scanner.nextLine();
 
-                if (userManager.login(email, password)) {
-                    User currentUser = userManager.getCurrentUser();
-                    if (currentUser.getEmail().equals("admin")) {
+                //bizbaeja 고친 부분
+
+                User currentUser = userManager.loginedUser(email, password);
+                if (currentUser != null) {
+                    if (currentUser.getRole() == Role.ADMIN) {
                         // 관리자 기능 목록
                         while (true) {
                             System.out.println("1. 모든 회원 출력");
@@ -83,11 +91,7 @@ public class Main {
                                 adminManager.addAnnouncement(announcement);
                             } else if (adminChoice == 7) {
                                 adminManager.listAnnouncements();
-                            } else if (adminChoice == 8) {
-                                System.out.print("추가할 방 이름: ");
-                                String roomName = scanner.nextLine();
-                                adminManager.addRoom(roomName);
-                            } else if (adminChoice == 9) {
+                            }  else if (adminChoice == 9) {
                                 adminManager.listActivityLogs();
                             } else if (adminChoice == 10) {
                                 System.out.print("차단 해제할 사용자 이메일: ");
@@ -105,6 +109,8 @@ public class Main {
                         // 일반 사용자 기능 목록
                         System.out.println("로그인 성공! 환영합니다, " + currentUser.getName() + "님.");
                     }
+                } else {
+                    System.out.println("로그인 실패. 이메일 또는 비밀번호를 확인해주세요.");
                 }
             } else if (choice == 2) {
                 break;
@@ -116,6 +122,6 @@ public class Main {
         scanner.close();
         userManager.saveUsers(); // 프로그램 종료 시 사용자 데이터 저장
         fileUtil.writeToFile("announcements.json", adminManager.getAnnouncements()); // 프로그램 종료 시 공지사항 데이터 저장
-        fileUtil.writeToFile("rooms.json", adminManager.getRooms()); // 프로그램 종료 시 방 데이터 저장
+
     }
 }

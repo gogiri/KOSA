@@ -1,7 +1,7 @@
 package com.msa2024.admin.controller;
 
-import com.msa2024.user.User;
-import com.msa2024.user.UserManager;
+import com.msa2024.user.model.User;
+import com.msa2024.user.model.UserManager;
 import com.msa2024.util.GenericFileUtil;
 import com.google.gson.reflect.TypeToken;
 
@@ -14,24 +14,19 @@ import java.util.concurrent.TimeUnit;
 public class AdminManager {
     private UserManager userManager;
 
-    // 공지사항
+    // 공지사항 및 방 목록
     private List<String> announcements;
-    private List<String> rooms;
     private GenericFileUtil<String> fileUtil;
     private List<String> activityLogs = new ArrayList<>(); // 활동 로그 목록
     private static final String ANNOUNCEMENTS_FILE = "announcements.json";
-    private static final String ROOMS_FILE = "rooms.json";
 
     public AdminManager(UserManager userManager) {
         this.userManager = userManager;
         this.fileUtil = new GenericFileUtil<>();
         this.announcements = fileUtil.readFromFile(ANNOUNCEMENTS_FILE, new TypeToken<List<String>>() {});
-        this.rooms = fileUtil.readFromFile(ROOMS_FILE, new TypeToken<List<String>>() {});
+
         if (this.announcements == null) {
             this.announcements = new ArrayList<>();
-        }
-        if (this.rooms == null) {
-            this.rooms = new ArrayList<>();
         }
     }
 
@@ -51,20 +46,18 @@ public class AdminManager {
     }
 
     // 방 추가
-    public void addRoom(String roomName) {
-        rooms.add(roomName);
-        fileUtil.writeToFile(ROOMS_FILE, rooms);
-        System.out.println("방이 추가되었습니다.");
-    }
+
 
     // 모든 회원 출력
     public void listAllUsers() {
-        userManager.printAllUsers();
+        for (User user : userManager.listUsers()) {
+            System.out.println("이름: " + user.getName() + ", 이메일: " + user.getEmail() + ", 전화번호: " + user.getTelePhone());
+        }
     }
 
     // 사용자 차단
     public void blockUser(String email, int hours) {
-        User user = userManager.getUser(email);
+        User user = userManager.getUserByEmail(email);
         if (user != null) {
             Date blockedUntil = new Date(System.currentTimeMillis() + TimeUnit.HOURS.toMillis(hours));
             user.setBlockedUntil(blockedUntil);
@@ -78,7 +71,7 @@ public class AdminManager {
 
     // 사용자 차단 해제
     public void unblockUser(String email) {
-        User user = userManager.getUser(email);
+        User user = userManager.getUserByEmail(email);
         if (user != null) {
             user.setBlockedUntil(null);
             userManager.saveUsers();
@@ -90,8 +83,7 @@ public class AdminManager {
 
     // 차단된 사용자 확인
     public void checkForBlockedUsers() {
-        HashMap<String, User> users = userManager.getAllUsers();
-        for (User user : users.values()) {
+        for (User user : userManager.listUsers()) {
             if (user.getBlockedUntil() != null && new Date().after(user.getBlockedUntil())) {
                 user.setBlockedUntil(null);
                 userManager.saveUsers();
@@ -102,8 +94,7 @@ public class AdminManager {
 
     // 노쇼 확인 및 차단
     public void checkNoShows() {
-        HashMap<String, User> users = userManager.getAllUsers();
-        for (User user : users.values()) {
+        for (User user : userManager.listUsers()) {
             if (user.getNoShowCount() >= 3) {
                 blockUser(user.getEmail(), 72);
             }
@@ -112,7 +103,7 @@ public class AdminManager {
 
     // 회원 정보 수정
     public void updateUser(String email, String newName, String newPassword) {
-        User user = userManager.getUser(email);
+        User user = userManager.getUserByEmail(email);
         if (user != null) {
             if (newName != null && !newName.isEmpty()) user.setName(newName);
             if (newPassword != null && !newPassword.isEmpty()) user.setPassword(newPassword);
@@ -125,8 +116,7 @@ public class AdminManager {
 
     // 블랙리스트 출력
     public void listBlacklistedUsers() {
-        HashMap<String, User> users = userManager.getAllUsers();
-        for (User user : users.values()) {
+        for (User user : userManager.listUsers()) {
             if (user.getBlockedUntil() != null) {
                 System.out.println("이메일: " + user.getEmail() + ", 이름: " + user.getName() + ", 차단된 시간: " + user.getBlockedUntil() + ", 차단 횟수: " + user.getBlockCount());
             }
@@ -150,7 +140,5 @@ public class AdminManager {
         return announcements;
     }
 
-    public List<String> getRooms() {
-        return rooms;
-    }
+
 }
