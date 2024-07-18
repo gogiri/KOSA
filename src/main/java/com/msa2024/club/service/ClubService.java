@@ -1,4 +1,4 @@
-package com.msa2024.club2.service;
+package com.msa2024.club.service;
 
 public interface ClubService {
 	

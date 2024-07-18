@@ -1,4 +1,4 @@
-package com.msa2024.club2.model;
+package com.msa2024.club.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

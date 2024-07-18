@@ -12,7 +12,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
 
-import com.msa2024.club2.model.Club;
+import com.msa2024.club.model.Club;
+import com.msa2024.club.service.ClubService;
 
 public class ClubServiceImpl implements ClubService {
 	static final String CLUBFILEPATH = "C:/Users/KOSA/Desktop/project5/KOSA/src/main/java/com/msa2024/club2/club2.json";
