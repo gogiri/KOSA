@@ -15,7 +15,7 @@ dependencies {
     testImplementation("com.google.code.gson:gson:2.9.0")
     // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
    testImplementation("com.fasterxml.jackson.core:jackson-databind:2.17.1")
-
+    testImplementation("com.google.code.gson:gson:2.8.9")
 }
 
 tasks.test {

@@ -1,15 +1,15 @@
-package com.msa2024.admin.controller;
+package com.msa2024.admin.service;
 
 import com.msa2024.user.model.User;
 import com.msa2024.user.model.UserManager;
-import com.msa2024.util.GenericFileUtil;
 import com.google.gson.reflect.TypeToken;
+import com.msa2024.util.GenericFileUtil;
 
+import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
+import java.util.Scanner;
 
 public class AdminManager {
     private UserManager userManager;
@@ -30,6 +30,69 @@ public class AdminManager {
         }
     }
 
+    // 관리자 메뉴 실행
+    public void run() {
+        Scanner scanner = new Scanner(System.in);
+        while (true) {
+            System.out.println("1. 모든 회원 출력");
+            System.out.println("2. 사용자 차단");
+            System.out.println("3. 차단된 사용자 확인");
+            System.out.println("4. 회원정보 수정");
+            System.out.println("5. 블랙리스트 출력");
+            System.out.println("6. 공지사항 추가");
+            System.out.println("7. 공지사항 목록 보기");
+            System.out.println("8. 사용자 활동 로그 보기");
+            System.out.println("9. 사용자 차단 해제");
+            System.out.println("10. 노쇼 확인 및 차단");
+            System.out.println("11. 로그아웃");
+            System.out.print("메뉴 선택: ");
+            int adminChoice = scanner.nextInt();
+            scanner.nextLine();  // 개행 문자 제거
+
+            if (adminChoice == 1) {
+                listAllUsers();
+            } else if (adminChoice == 2) {
+                System.out.print("차단할 사용자 이메일: ");
+                String blockEmail = scanner.nextLine();
+                System.out.print("차단할 시간(시간 단위): ");
+                int hours = scanner.nextInt();
+                scanner.nextLine();  // 개행 문자 제거
+                blockUser(blockEmail, hours);
+            } else if (adminChoice == 3) {
+                checkForBlockedUsers();
+            } else if (adminChoice == 4) {
+                System.out.print("수정할 사용자 이메일: ");
+                String updateEmail = scanner.nextLine();
+                System.out.print("새 이름(공백으로 유지): ");
+                String newName = scanner.nextLine();
+                System.out.print("새 비밀번호(공백으로 유지): ");
+                String newPassword = scanner.nextLine();
+                updateUser(updateEmail, newName, newPassword);
+            } else if (adminChoice == 5) {
+                listBlacklistedUsers();
+            } else if (adminChoice == 6) {
+                System.out.print("추가할 공지사항: ");
+                String announcement = scanner.nextLine();
+                addAnnouncement(announcement);
+            } else if (adminChoice == 7) {
+                listAnnouncements();
+            } else if (adminChoice == 8) {
+                listActivityLogs();
+            } else if (adminChoice == 9) {
+                System.out.print("차단 해제할 사용자 이메일: ");
+                String unblockEmail = scanner.nextLine();
+                unblockUser(unblockEmail);
+            } else if (adminChoice == 10) {
+                checkNoShows();
+            } else if (adminChoice == 11) {
+                break;
+            } else {
+                System.out.println("잘못된 선택입니다. 다시 시도해주세요.");
+            }
+        }
+        scanner.close();
+    }
+
     // 공지사항 추가
     public void addAnnouncement(String announcement) {
         announcements.add(announcement);
@@ -45,9 +108,6 @@ public class AdminManager {
         }
     }
 
-    // 방 추가
-
-
     // 모든 회원 출력
     public void listAllUsers() {
         for (User user : userManager.listUsers()) {
@@ -59,9 +119,10 @@ public class AdminManager {
     public void blockUser(String email, int hours) {
         User user = userManager.getUserByEmail(email);
         if (user != null) {
-            Date blockedUntil = new Date(System.currentTimeMillis() + TimeUnit.HOURS.toMillis(hours));
-            user.setBlockedUntil(blockedUntil);
-            user.incrementBlockCount();
+            LocalDateTime blockedUntilDateTime = LocalDateTime.now().plusHours(hours);
+            LocalDate blockedUntil = blockedUntilDateTime.toLocalDate();
+            user.setBlockDate(blockedUntil);
+            user.addWarning();
             userManager.saveUsers();
             System.out.println("사용자 " + email + "이 " + blockedUntil + "까지 차단되었습니다.");
         } else {
@@ -73,7 +134,7 @@ public class AdminManager {
     public void unblockUser(String email) {
         User user = userManager.getUserByEmail(email);
         if (user != null) {
-            user.setBlockedUntil(null);
+            user.setBlockDate(null);
             userManager.saveUsers();
             System.out.println("사용자 " + email + "의 차단이 해제되었습니다.");
         } else {
@@ -84,8 +145,8 @@ public class AdminManager {
     // 차단된 사용자 확인
     public void checkForBlockedUsers() {
         for (User user : userManager.listUsers()) {
-            if (user.getBlockedUntil() != null && new Date().after(user.getBlockedUntil())) {
-                user.setBlockedUntil(null);
+            if (user.isBlocked()) {
+                user.setBlockDate(null);
                 userManager.saveUsers();
                 System.out.println("사용자 " + user.getEmail() + "의 차단이 자동으로 해제되었습니다.");
             }
@@ -95,7 +156,7 @@ public class AdminManager {
     // 노쇼 확인 및 차단
     public void checkNoShows() {
         for (User user : userManager.listUsers()) {
-            if (user.getNoShowCount() >= 3) {
+            if (user.getWarningCount() >= 3) {
                 blockUser(user.getEmail(), 72);
             }
         }
@@ -117,8 +178,8 @@ public class AdminManager {
     // 블랙리스트 출력
     public void listBlacklistedUsers() {
         for (User user : userManager.listUsers()) {
-            if (user.getBlockedUntil() != null) {
-                System.out.println("이메일: " + user.getEmail() + ", 이름: " + user.getName() + ", 차단된 시간: " + user.getBlockedUntil() + ", 차단 횟수: " + user.getBlockCount());
+            if (user.isBlocked()) {
+                System.out.println("이메일: " + user.getEmail() + ", 이름: " + user.getName() + ", 차단된 시간: " + user.getBlockDate() + ", 누적 경고 수: " + user.getWarningCount());
             }
         }
     }
@@ -139,6 +200,4 @@ public class AdminManager {
     public List<String> getAnnouncements() {
         return announcements;
     }
-
-
 }
