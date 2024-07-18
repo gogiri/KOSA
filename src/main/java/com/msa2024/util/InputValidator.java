@@ -11,7 +11,7 @@ public class InputValidator {
     }
 
     public static boolean isValidPassword(String password) {
-        return password != null && password.matches("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$");
+        return password != null && password.matches("^\\d{4}$");
     }
 
     public static boolean isValidRole(String role) {

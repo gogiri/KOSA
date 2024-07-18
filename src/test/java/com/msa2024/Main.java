@@ -5,11 +5,8 @@ import com.msa2024.user.model.Role;
 import com.msa2024.user.model.User;
 import com.msa2024.user.model.UserManager;
 import com.msa2024.user.service.UserServiceImpl;
-import com.msa2024.util.DateUtil;
 import com.msa2024.util.GenericFileUtil;
 
-import java.time.LocalDate;
-import java.util.List;
 import java.util.Scanner;
 
 public class Main {
