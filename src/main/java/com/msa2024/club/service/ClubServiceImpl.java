@@ -1,4 +1,4 @@
-package com.msa2024.club2.service;
+package com.msa2024.club.service;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -16,7 +16,7 @@ import com.msa2024.club.model.Club;
 import com.msa2024.club.service.ClubService;
 
 public class ClubServiceImpl implements ClubService {
-	static final String CLUBFILEPATH = "C:/Users/KOSA/Desktop/project5/KOSA/src/main/java/com/msa2024/club2/club2.json";
+	static final String CLUBFILEPATH = "C:/Users/SungJun/git/KOSA/src/main/resources/club.json";
 	
 	// 1. 전체 출력 (Club JSON 파일을 로드하고 출력하는 함수)
 	
