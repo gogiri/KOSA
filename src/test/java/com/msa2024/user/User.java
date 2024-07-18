@@ -1,4 +1,4 @@
-package com.msa2024.user;
+
 
 import java.io.Serializable;
 import java.util.Date;

@@ -16,8 +16,8 @@ public class UserManager {
       userService.loadUsersSignUpFile(filePath);
     }
 
-    public void registerUser(String email, String name, String password, Role role) {
-        userService.register(email, name, password, role);
+    public void registerUser(String email, String name, String phone_number, String password, Role role) {
+        userService.register(email, name, phone_number, password, role);
     }
 
     public User loginUser(String email, String password) {

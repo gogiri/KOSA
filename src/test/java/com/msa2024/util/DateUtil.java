@@ -1,29 +1,23 @@
 package com.msa2024.util;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 public class DateUtil {
 
     private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_FORMAT);
 
     public static String getCurrentDateTime() {
-        SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
-        return sdf.format(new Date());
+        return LocalDateTime.now().format(formatter);
     }
 
-    public static String formatDate(Date date) {
-        SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
-        return sdf.format(date);
+    public static String formatDate(LocalDateTime dateTime) {
+        return dateTime.format(formatter);
     }
 
-    public static Date parseDate(String dateString) {
-        try {
-            SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
-            return sdf.parse(dateString);
-        } catch (Exception e) {
-            System.err.println("Error parsing date: " + e.getMessage());
-            return null;
-        }
+    public static LocalDateTime parseDate(String dateString) throws DateTimeParseException {
+        return LocalDateTime.parse(dateString, formatter);
     }
 }
