@@ -1,14 +1,16 @@
 package com.msa2024.club.model;
 
+import javax.annotation.processing.Generated;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class Club {
+public class Club{
 
 	@JsonProperty("clubNumber")
 	private int clubNumber;
 
-	@JsonProperty("host") // user의 이메일로 처리예정
-	private boolean host = true;
+	@JsonProperty("email") // user의 이메일로 처리예정
+	private String host;
 
 	@JsonProperty("menuType")
 	private String menuType;
@@ -33,8 +35,8 @@ public class Club {
 
 	public Club(int clubNumber, String menuType, String matchName, int matchMaxSize, String matchDate, String matchTime, String matchPlace,
 			String isDelivery) {
+		
 		this.clubNumber = clubNumber;
-		this.host = false;
 		this.menuType = menuType;
 		this.matchName = matchName;
 		this.matchMaxSize = matchMaxSize;
@@ -55,13 +57,6 @@ public class Club {
 		this.clubNumber = clubNumber;
 	}
 
-	public boolean isHost() {
-		return host;
-	}
-
-	public void setHost(boolean host) {
-		this.host = host;
-	}
 
 	public String getMenuType() {
 		return menuType;
@@ -117,6 +112,12 @@ public class Club {
 
 	public void setIsDelivery(String isDelivery) {
 		this.isDelivery = isDelivery;
+	}
+	public String getHost() {
+		return host;
+	}
+	public void setHost(String host) {
+		this.host = host;
 	}
 	
 }
