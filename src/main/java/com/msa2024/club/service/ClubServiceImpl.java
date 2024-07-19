@@ -14,9 +14,16 @@ import java.util.Scanner;
 
 import com.msa2024.club.model.Club;
 import com.msa2024.club.service.ClubService;
+import com.msa2024.user.model.UserManager;
+import com.msa2024.user.service.UserServiceImpl;
 
 public class ClubServiceImpl implements ClubService {
-	static final String CLUBFILEPATH = "C:/Users/SungJun/git/KOSA/src/main/resources/club.json";
+	
+	public ClubServiceImpl() {
+		
+	}
+	
+	static final String CLUBFILEPATH = "C:/Users/KOSA/Desktop/project5/KOSA/src/main/java/com/msa2024/club/club.json";
 	
 	// 1. 전체 출력 (Club JSON 파일을 로드하고 출력하는 함수)
 	
@@ -32,7 +39,7 @@ public class ClubServiceImpl implements ClubService {
 			// 모든 Club 객체의 내용을 출력
 			for (Club club : clubs) {
 				System.out.println("소모임 번호: " + club.getClubNumber());
-				System.out.println("방장 여부: " + club.isHost());
+				System.out.println("EMAIL : " + club.getHost());
 				System.out.println("음식 종류: " + club.getMenuType());
 				System.out.println("방 이름: " + club.getMatchName());
 				System.out.println("최대 인원: " + club.getMatchMaxSize());
