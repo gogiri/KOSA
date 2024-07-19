@@ -123,8 +123,13 @@ public class UserServiceImpl implements UserService {
       return null;
     }
     
-    //비밀번호 정규식 최소 8자 + 최소 한개의 영문자 + 최소 한개의 숫자
+    //비밀번호 정규식 최소4글자
  
+    if(!InputValidator.isValidPassword(password)) {
+      System.out.println("비밀번호 형식이 잘못되었습니다.");
+      return null;
+    }
+    
 
     // 로그인 시 패스워드가 일치 하고 로그인 될 때, 현재 시간도 저장.
     if (user.getPassword().equals(password)) {

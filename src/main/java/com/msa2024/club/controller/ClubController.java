@@ -10,7 +10,7 @@ public class ClubController {
 
 		// 클럽 메뉴 열기
 		ClubServiceImpl cm = new ClubServiceImpl();
-		Scanner sc = new Scanner(System.in);
+		Scanner scClub = new Scanner(System.in);
 
 		// Club 객체 예시 생성
 //		ClubManager club = new ClubManager();
@@ -38,7 +38,7 @@ public class ClubController {
 				System.out.println("5. 참가");
 				System.out.println("9. 종료");
 				System.out.print("메뉴를 선택하세요=>");
-				String menu = sc.nextLine();
+				String menu = scClub.nextLine();
 
 				switch (menu) {
 				case "1":
@@ -75,7 +75,7 @@ public class ClubController {
 
 			}
 		}
-		sc.close();
+		scClub.close();
 		System.out.println("\n===== END =====");
 		
 	}
