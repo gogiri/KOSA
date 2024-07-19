@@ -3,13 +3,14 @@ package com.msa2024.user.model;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+
+
 
 public class User {
   
   private String email; //이메일
-  private String telePhone; //전화번호
+  private String phone_number; //전화번호
   private String name; //이름
   private String password; //비밀번호 : 전화번호 뒷자리
   private Role role; //사용자 역할
@@ -17,22 +18,23 @@ public class User {
   private List<AttendanceRecord> attendanceRecords; //출퇴근 시간 기록.
   private int warningCount; //누적 경고 수
   
-// bizbaeja
-  private Date blockedUntil; // 차단 종료 시간
-  private int noShowCount; // 노쇼 횟수
-  public User(String email, String name, String password, Role role, LocalDate blockDate) {
+
+  public User(String email, String name, String phone_number, String password, Role role, LocalDate blockDate) {
     this.email = email;
     this.name = name;
+    this.phone_number = phone_number;
     this.password = password;
     this.role = role;
     this.blockDate = blockDate;
-    this.attendanceRecords = new ArrayList<>();
+    this.attendanceRecords = new ArrayList<AttendanceRecord>();
     this.warningCount = 0;  // 누적경고 수 초기화
 }
 
   public User(String name, String phoneNumber, String email, String password) {
-
-    super();
+    this.name = name;
+    this.phone_number = phoneNumber;
+    this.email = email;
+    this.password = password;
   }
 
 
@@ -50,6 +52,18 @@ public class User {
 
   public String getName() {
     return name;
+  }
+
+
+
+  public String getPhone_number() {
+    return phone_number;
+  }
+
+
+
+  public void setPhone_number(String phone_number) {
+    this.phone_number = phone_number;
   }
 
 
@@ -96,16 +110,6 @@ public class User {
 
 
 
-  public String getTelePhone() {
-    return telePhone;
-  }
-
-
-
-  public void setTelePhone(String telePhone) {
-    this.telePhone = telePhone;
-  }
-
 
 
   public List<AttendanceRecord> getAttendanceRecords() {
@@ -133,46 +137,40 @@ public class User {
   
   public boolean isBlocked() {
     // TODO Auto-generated method stub
-    return false;
+    if(blockDate == null) {
+      return false;
+    }
+    return LocalDate.now().isAfter(blockDate);
+  }
+  
+  public void addAttendanceRecord(AttendanceRecord record) {
+    // TODO Auto-generated method stub
+    attendanceRecords.add(record);
+    
+  }
+
+  public void addWarning() {
+    // TODO Auto-generated method stub
+    this.warningCount++;
+    
   }
 
 
 
   @Override
   public String toString() {
-    return "User [email=" + email + ", telePhone=" + telePhone + ", name=" + name + ", password="
-        + password + ", role=" + role + ", blockDate=" + blockDate + ", attendanceRecords="
-        + attendanceRecords + ", warningCount=" + warningCount + "]";
+  
+    return "User [email=" + email + ", phone_number=" + phone_number + ", name=" + name
+        + ", password=" + password + ", role=" + role + ", blockDate=" + blockDate
+        + ", attendanceRecords=" + attendanceRecords.toString() + ", warningCount=" + warningCount + "]";
   }
+  
+  
 
 
 
-  public void addAttendanceRecord(AttendanceRecord record) {
-    // TODO Auto-generated method stub
-    
-  }
+  
 
-
-
-  public void addWarning() {
-    // TODO Auto-generated method stub
-    
-  }
-
-// bizbaeja - 필요한 메서드
-  public void setBlockedUntil(Date blockedUntil) {
-  }
-
-  public void incrementBlockCount() {
-  }
-
-  public Date getBlockedUntil() {
-    return blockedUntil;
-  }
-
-  public int getNoShowCount() {
-    return noShowCount;
-  }
 }
 
 

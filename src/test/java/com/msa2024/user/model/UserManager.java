@@ -16,13 +16,12 @@ public class UserManager {
       userService.loadUsersSignUpFile(filePath);
     }
 
-    public void registerUser(String email, String name, String password, Role role) {
-        userService.register(email, name, password, role);
+    public void registerUser(String email, String name, String phone_number, String password, Role role) {
+        userService.register(email, name, phone_number, password, role);
     }
-//bizbaeja 수정
 
-    public boolean loginUser(String email, String password) {
-        return userService.login(email, password).isBlocked();
+    public User loginUser(String email, String password) {
+        return userService.login(email, password);
     }
 
     public void logoutUser(String email) {
@@ -37,16 +36,11 @@ public class UserManager {
         return userService.getUsers();
     }
 
-    // bizbaeja- 필요한 메서드
-    public User getUserByEmail(String email) {
-        return
-    }
-
-    public void saveUsers() {
-    }
-
-    public User loginedUser(String loginEmail, String loginPassword) {
-        return  userService.login(loginEmail,loginPassword);
+    public String getEmail(String email) {
+        userService.getUsers().stream().
+                filter(e-> Boolean.parseBoolean(getEmail(email)))
+                .forEach(System.out::println);
+        return email;
     }
 }
   
