@@ -1,84 +1,102 @@
 package com.msa2024.admin.controller;
-//
-//import java.util.ArrayList;
-//import java.util.HashMap;
-//import java.util.Date;
-//import java.util.concurrent.TimeUnit;
-//
+
+import com.msa2024.admin.entity.AdminManager;
+import com.msa2024.admin.service.AdminService;
+import com.msa2024.admin.service.AdminServiceImpl;
+import com.msa2024.user.model.UserManager;
+
+import java.util.Scanner;
+
 public class AdminController {
-    //    private UserManager userManager;
-//    private ReservationManager reservationManager;
-//    private ClubManager clubManager;
-//
-//    public AdminManager(UserManager userManager, ReservationManager reservationManager, ClubManager clubManager) {
-//        this.userManager = userManager;
-//        this.reservationManager = reservationManager;
-//        this.clubManager = clubManager;
-//    }
-//
-//    public void listAllUsers() {
-//        HashMap<String, User> users = userManager.getAllUsers();
-//        for (User user : users.values()) {
-//            System.out.println("이메일: " + user.getEmail() + ", 이름: " + user.getName() + ", 역할: " + user.getRole() + ", 차단된 시간: " + user.getBlockedUntil());
-//        }
-//    }
-//
-//    public void listAllReservations() {
-//        ArrayList<Reservation> reservations = reservationManager.listReservations();
-//        for (Reservation reservation : reservations) {
-//            System.out.println("회의실: " + reservation.getRoomSeq() + ", 예약 시간: " + reservation.getReservationTime() + ", 사용자: " + reservation.getUser() + ", 취소 여부: " + reservation.isCancelled() + ", 완료 여부: " + reservation.isCompleted());
-//        }
-//    }
-//
-//    public void listAllClubs() {
-//        ArrayList<Club> clubs = clubManager.listClubs();
-//        for (Club club : clubs) {
-//            System.out.println("소모임 이름: " + club.getName() + ", 설명: " + club.getDescription() + ", 멤버: " + club.getMembers());
-//        }
-//    }
-//
-//    public void blockUser(String email, int hours) {
-//        User user = userManager.getUser(email);
-//        if (user != null) {
-//            Date blockedUntil = new Date(System.currentTimeMillis() + TimeUnit.HOURS.toMillis(hours));
-//            user.setBlockedUntil(blockedUntil);
-//            userManager.saveUsersToFile();
-//            System.out.println("사용자 " + email + "이 " + blockedUntil + "까지 차단되었습니다.");
-//        } else {
-//            System.out.println("사용자를 찾을 수 없습니다.");
-//        }
-//    }
-//
-//    public void checkForBlockedUsers() {
-//        HashMap<String, User> users = userManager.getAllUsers();
-//        for (User user : users.values()) {
-//            if (user.getBlockedUntil() != null && new Date().after(user.getBlockedUntil())) {
-//                user.setBlockedUntil(null);
-//                userManager.saveUsersToFile();
-//                System.out.println("사용자 " + user.getEmail() + "의 차단이 해제되었습니다.");
-//            }
-//        }
-//    }
-//
-//    public void updateUser(String email, String newName, String newPassword, String newRole) {
-//        User user = userManager.getUser(email);
-//        if (user != null) {
-//            if (newName != null && !newName.isEmpty()) user.setName(newName);
-//            if (newPassword != null && !newPassword.isEmpty()) user.setPassword(newPassword);
-//            if (newRole != null && !newRole.isEmpty()) user.setRole(newRole);
-//            userManager.saveUsersToFile();
-//            System.out.println("사용자 정보가 업데이트되었습니다.");
-//        } else {
-//            System.out.println("사용자를 찾을 수 없습니다.");
-//        }
-//    }
-//
-//    public void listBlacklistedUsers() {
-//        HashMap<String, User> users = userManager.getAllUsers();
-//        for (User user : users.values()) {
-//            if (user.getBlockedUntil() != null) {
-//                System.out.println("이메일: " + user.getEmail() + ", 이름: " + user.getName() + ", 차단된 시간: " + user.getBlockedUntil());
-//            }
-//        }
-//}
+    private boolean exitRequested = false;
+    private AdminManager adminManager;
+    private AdminService adminService;
+
+    public AdminController(UserManager userManager) {
+        this.adminManager = new AdminManager(userManager);
+        this.adminService = new AdminServiceImpl(adminManager);
+    }
+
+    public void run() {
+        adminView(new Scanner(System.in));
+    }
+
+    public void adminView(Scanner sc) {
+        boolean adminLoop = true;
+        while (adminLoop) {
+            System.out.println("\n[INFO] 관리자님 환영합니다!\n"
+                    + "메뉴를 선택해주세요!!\n"
+                    + "[1] 모든 회원 출력\t[2] 사용자 차단\t[3] 차단된 사용자 확인\t[4] 회원정보 수정\t"
+                    + "[5] 블랙리스트 출력\t[6] 공지사항 추가\t[7] 공지사항 목록 보기\t"
+                    + "[8] 사용자 활동 로그 보기\t[9] 사용자 차단 해제\t[10] 노쇼 확인 및 차단\t[11] 로그아웃\t[12] 뒤로가기");
+            System.out.print("메뉴 => ");
+            String adminMenu = sc.nextLine();
+            switch (adminMenu) {
+                case "1":
+                    adminService.listAllUsers();
+                    break;
+                case "2":
+                    System.out.print("차단할 사용자 이메일: ");
+                    String blockEmail = sc.nextLine();
+                    System.out.print("차단할 시간(시간 단위): ");
+                    int hours = sc.nextInt();
+                    sc.nextLine();  // 개행 문자 제거
+                    adminService.blockUser(blockEmail, hours);
+                    break;
+                case "3":
+                    adminService.checkForBlockedUsers();
+                    break;
+                case "4":
+                    System.out.print("수정할 사용자 이메일: ");
+                    String updateEmail = sc.nextLine();
+                    System.out.print("새 이름(공백으로 유지): ");
+                    String newName = sc.nextLine();
+                    System.out.print("새 비밀번호(공백으로 유지): ");
+                    String newPassword = sc.nextLine();
+                    adminService.updateUser(updateEmail, newName, newPassword);
+                    break;
+                case "5":
+                    adminService.listBlacklistedUsers();
+                    break;
+                case "6":
+                    System.out.print("추가할 공지사항: ");
+                    String announcement = sc.nextLine();
+                    adminService.addAnnouncement(announcement);
+                    break;
+                case "7":
+                    adminService.listAnnouncements();
+                    break;
+                case "8":
+                    adminService.listActivityLogs();
+                    break;
+                case "9":
+                    System.out.print("차단 해제할 사용자 이메일: ");
+                    String unblockEmail = sc.nextLine();
+                    adminService.unblockUser(unblockEmail);
+                    break;
+                case "10":
+                    adminService.checkNoShows();
+                    break;
+                case "11":
+                    logout();
+                    adminLoop = false;
+                    break;
+                case "12":
+                    adminLoop = false;
+                    break;
+                default:
+                    System.out.println("\n없는 메뉴입니다. 다시 선택하세요.");
+                    break;
+            }
+        }
+    }
+
+    public boolean isExitRequested() {
+        return exitRequested;
+    }
+
+    private void logout() {
+        exitRequested = true;
+        System.out.println("로그아웃 되었습니다.");
+    }
 }

@@ -6,5 +6,6 @@ public enum ProgramState {
     USER_MENU,
     ADMIN_MENU,
     CLUB_MENU,
+    RESERVATION_MENU,
     EXIT
 }

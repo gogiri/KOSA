@@ -27,39 +27,37 @@ public class UserServiceImpl implements UserService {
 
 
 
+
   @Override
   public void loadUsersSignUpFile(String filePath) {
     ObjectMapper objectMapper = new ObjectMapper();
     try {
       List<Map<String, String>> userList = objectMapper.readValue(new File(filePath),
-          new TypeReference<List<Map<String, String>>>() {});
+              new TypeReference<List<Map<String, String>>>() {});
       for (Map<String, String> userMap : userList) {
-
         String email = userMap.get("email");
         String name = userMap.get("name");
         String phoneNumber = userMap.get("phone_number");
-        String password = phoneNumber.substring(phoneNumber.length() - 4); // 전화번호 뒷자리 4자리로 비밀번호 설정
-        Role role = Role.USER;
+        String password = phoneNumber.substring(phoneNumber.length() - 4);
+        String roleString = userMap.get("role").toUpperCase(); // JSON 파일에서 역할을 읽어옴
+        Role role = Role.valueOf(roleString);
         LocalDate blockDate = LocalDate.now().plusMonths(6);
+
         User user = new User(email, name, phoneNumber, password, role, blockDate);
         users.put(email, user);
-         //System.out.println("[userList] : " + userList.toString());
-         System.out.println("[userMap] : " + userMap.toString());
-        /*
-         * //키 벨류 값 출력. userMap.forEach((key, value) -> { System.out.println("Key: " + key +
-         * ", Value: " + value); });
-         */
-        
+        System.out.println("[userMap] : " + userMap.toString()); // 디버그 메시지 추가
+        System.out.println("Created User: " + user.toString()); // 디버그 메시지 추가
       }
     } catch (IOException e) {
       System.out.println("Error reading user file: " + e.getMessage());
+    } catch (IllegalArgumentException e) {
+      System.out.println("Error parsing role: " + e.getMessage());
     }
   }
-
   @Override
   public boolean register(String email, String name, String phone_number, String password,
       Role role) {
-    
+
     if (users.containsKey(email)) {
       System.out.println("해당 메일은 이미 등록된 메일입니다.");
       return false;
@@ -69,26 +67,26 @@ public class UserServiceImpl implements UserService {
       System.out.println("모든 입력 필드를 작성해주세요.");
       return false;
     }
-    
+
     //이름 정규식
     if(InputValidator.isValidName(name)) {
       System.out.println("이름 형식이 잘못되었습니다!!");
       return false;
     }
-    
-    
+
+
     //이메일 정규식
     if(InputValidator.isValidEmail(email)) {
       System.out.println("이메일 형식이 잘못되었습니다!!");
       return false;
     }
-    
+
     //전화번호 정규식
     if(InputValidator.isValidPhoneNumber(phone_number)) {
       System.out.println("전화번호 형식이 잘못되었습니다!!");
       return false;
     }
-    
+
 
     LocalDate blockDate = LocalDate.now().plusMonths(6);
     User user = new User(email, name, phone_number, password, role, blockDate);
@@ -113,15 +111,15 @@ public class UserServiceImpl implements UserService {
       System.out.println(" 로그인 정지 상태입니다.");
       return null;
     }
-    
+
     //이메일 정규식
     if(!InputValidator.isValidEmail(email)) {
       System.out.println(InputValidator.isValidEmail(email) + "이메일 형식이 잘못되었습니다!!");
       return null;
     }
-    
+
     //비밀번호 정규식 최소 8자 + 최소 한개의 영문자 + 최소 한개의 숫자
- 
+
 
     // 로그인 시 패스워드가 일치 하고 로그인 될 때, 현재 시간도 저장.
     if (user.getPassword().equals(password)) {
