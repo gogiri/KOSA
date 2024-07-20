@@ -1,41 +1,42 @@
 package com.msa2024.user.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.msa2024.user.model.AttendanceRecord;
 import com.msa2024.user.model.Role;
 import com.msa2024.user.model.User;
+import com.msa2024.util.GenericFileUtil;
 import com.msa2024.util.InputValidator;
 
-import java.io.File;
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
 public class UserServiceImpl implements UserService {
 
-  private User user;
   private Map<String, User> users = new HashMap<>();
   private Map<String, AttendanceRecord> currentSessions = new HashMap<>();
-  private ObjectMapper objectMapper;
+  private GenericFileUtil<User> fileUtil;
 
   public UserServiceImpl(String filePath) {
-    this.objectMapper = new ObjectMapper();
-    this.objectMapper.findAndRegisterModules(); // Register modules for Java 8 date/time types
+    this.fileUtil = new GenericFileUtil<>("src/main/resources/");
     loadUsersSignUpFile(filePath);
   }
 
   @Override
   public void loadUsersSignUpFile(String filePath) {
     try {
-      List<User> userList = objectMapper.readValue(new File(filePath), new TypeReference<List<User>>() {});
-      for (User user : userList) {
-        users.put(user.getEmail(), user);
-        System.out.println("[userList] : " + userList.toString());
+      List<User> userList = fileUtil.readFromFileWithJackson(filePath, new TypeReference<List<User>>() {});
+      if (userList != null) {
+        for (User user : userList) {
+          users.put(user.getEmail(), user);
+          System.out.println("[User] : " + user.toString());
+        }
+      } else {
+        System.out.println("User list is null.");
       }
-    } catch (IOException e) {
+    } catch (Exception e) {
       System.out.println("Error reading user file: " + e.getMessage());
+      e.printStackTrace();
     }
   }
 
@@ -51,19 +52,16 @@ public class UserServiceImpl implements UserService {
       return false;
     }
 
-    // 이름 정규식
     if (!InputValidator.isValidName(name)) {
       System.out.println("이름 형식이 잘못되었습니다!!");
       return false;
     }
 
-    // 이메일 정규식
     if (!InputValidator.isValidEmail(email)) {
       System.out.println("이메일 형식이 잘못되었습니다!!");
       return false;
     }
 
-    // 전화번호 정규식
     if (!InputValidator.isValidPhoneNumber(phone_number)) {
       System.out.println("전화번호 형식이 잘못되었습니다!!");
       return false;
@@ -72,41 +70,44 @@ public class UserServiceImpl implements UserService {
     LocalDate blockDate = LocalDate.now().plusMonths(6);
     User user = new User(email, name, phone_number, password, role, blockDate);
     users.put(email, user);
+    saveUsers();
     System.out.println("회원가입이 완료되었습니다!!. 해당 계정은 6개월 후에 잠길 예정입니다.");
     return true;
   }
 
+  private void saveUsers() {
+    List<User> userList = new ArrayList<>(users.values());
+    fileUtil.writeToFileWithJackson("users.json", userList);
+  }
+
   @Override
   public User login(String email, String password) {
-    // 이메일 키값이 없을 때.
+    System.out.println("로그인 시도 - 이메일: " + email + ", 비밀번호: " + password);
+
     if (!users.containsKey(email)) {
       System.out.println("이메일 정보가 일치하지 않습니다.");
       return null;
     }
 
-    // 로그인이 막혔을 때.
     User user = users.get(email);
     if (user.isBlocked()) {
       System.out.println(" 로그인 정지 상태입니다.");
       return null;
     }
 
-    // 이메일 정규식
     if (!InputValidator.isValidEmail(email)) {
       System.out.println("이메일 형식이 잘못되었습니다!!");
       return null;
     }
 
-    // 로그인 시 패스워드가 일치하고 로그인 될 때, 현재 시간도 저장.
     if (user.getPassword().equals(password)) {
       System.out.println("로그인 되었습니다!");
       AttendanceRecord record = new AttendanceRecord(LocalDateTime.now());
-
       user.addAttendanceRecord(record);
       currentSessions.put(email, record);
       return user;
     } else {
-      System.out.println("Incorrect password.");
+      System.out.println("비밀번호가 일치하지 않습니다.");
       return null;
     }
   }
@@ -119,7 +120,7 @@ public class UserServiceImpl implements UserService {
       System.out.println("Logout successful.");
 
       if (record.isEarlyLeave()) {
-        System.out.println(record.getFormatterLogoutTime() + " 기타사유로 인한 조퇴");
+        System.out.println(record.getFormatterLogoutTime() + "기타사유로 인한 조퇴");
       }
     } else {
       System.out.println("No active session found for the user.");
@@ -144,17 +145,11 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public void showAdminFunction() {
-    // TODO Auto-generated method stub
+    // 구현 생략
   }
 
   @Override
   public void showUserFunction() {
-    // TODO Auto-generated method stub
-
-    Scanner sc = new Scanner(System.in);
-    System.out.println("\n[INFO]  [" + user.getName() + "]님 환영합니다!\n" + "메뉴를 선택해주세요!!\n"
-            + "[1] 회의실 예약\t[2] 소모임 예약\t[3] 로그아웃");
-    System.out.print("메뉴 => ");
-    String view = sc.nextLine();
+    // 구현 생략
   }
 }

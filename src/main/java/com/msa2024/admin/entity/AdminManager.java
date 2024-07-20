@@ -18,7 +18,7 @@ public class AdminManager {
 
     public AdminManager(UserManager userManager) {
         this.userManager = userManager;
-        this.fileUtil = new GenericFileUtil<>();
+        this.fileUtil = new GenericFileUtil<>("src/main/resources/");
         this.announcements = fileUtil.readFromFileWithJackson(ANNOUNCEMENTS_FILE, new TypeReference<List<User>>() {});
 
         if (this.announcements == null) {
@@ -40,7 +40,7 @@ public class AdminManager {
     private void saveUsers() {
         // 사용자 정보를 파일이나 데이터베이스에 저장하는 로직을 구현합니다.
         // 여기서는 GenericFileUtil을 사용하여 파일에 저장하는 예시를 제공합니다.
-        fileUtil.writeToFileWithJackson("users.json", userManager.listUsers());
+        fileUtil.writeToFile("users.json", userManager.listUsers());
     }
 
     public List<User> listAllUsers() {
@@ -111,7 +111,7 @@ public class AdminManager {
 
     public void addAnnouncement(User announcement) {
         announcements.add(announcement);
-        fileUtil.writeToFileWithJackson(ANNOUNCEMENTS_FILE, announcements);
+        fileUtil.writeToFile(ANNOUNCEMENTS_FILE, announcements);
         System.out.println("공지사항이 추가되었습니다.");
     }
 

@@ -2,6 +2,7 @@ package com.msa2024.util;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -24,6 +25,7 @@ public class GenericFileUtil<T> implements FileUtil<T> {
                 .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
                 .create();
         this.objectMapper = new ObjectMapper();
+        this.objectMapper.registerModule(new JavaTimeModule()); // JavaTimeModule 등록
     }
 
     public GenericFileUtil(String basePath) {
@@ -33,6 +35,7 @@ public class GenericFileUtil<T> implements FileUtil<T> {
                 .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
                 .create();
         this.objectMapper = new ObjectMapper();
+        this.objectMapper.registerModule(new JavaTimeModule()); // JavaTimeModule 등록
     }
 
     @Override

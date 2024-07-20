@@ -13,7 +13,7 @@ public class UserController2 {
     private static User loggedInUser;
 
     public UserController2() {
-        UserServiceImpl service = new UserServiceImpl("src/main/resources/students.json");
+        UserServiceImpl service = new UserServiceImpl("students.json");
         userManager = new UserManager(service);
         System.out.println(userManager.toString());
     }
@@ -22,11 +22,7 @@ public class UserController2 {
         return loggedInUser;
     }
 
-    public static UserManager getUserManager() {
-        return userManager;
-    }
-
-    public static User login(Scanner sc) {
+    public static void login(Scanner sc) {
         System.out.print("이메일: ");
         String loginEmail = sc.nextLine();
         System.out.print("비밀번호: ");
@@ -38,7 +34,6 @@ public class UserController2 {
         } else {
             System.out.println("로그인 실패! 이메일이나 비밀번호를 확인하세요.");
         }
-        return loggedInUser;
     }
 
     public void register(Scanner sc) {
@@ -81,12 +76,12 @@ public class UserController2 {
             String userMenu = sc.nextLine();
             switch (userMenu) {
                 case "1":
-                    // MeetingRoomController meetingRoomController = new MeetingRoomController();
-                    // meetingRoomController.run();
+                    //MeetingRoomController meetingRoomController = new MeetingRoomController();
+                    //meetingRoomController.run();
                     break;
                 case "2":
-                    // ClubController clubController = new ClubController();
-                    // clubController.run();
+                    //ClubController clubController = new ClubController();
+                    //clubController.run();
                     break;
                 case "3":
                     logout();
