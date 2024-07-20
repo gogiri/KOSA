@@ -22,7 +22,11 @@ public class UserController2 {
         return loggedInUser;
     }
 
-    public static void login(Scanner sc) {
+    public static UserManager getUserManager() {
+        return userManager;
+    }
+
+    public static User login(Scanner sc) {
         System.out.print("이메일: ");
         String loginEmail = sc.nextLine();
         System.out.print("비밀번호: ");
@@ -34,6 +38,7 @@ public class UserController2 {
         } else {
             System.out.println("로그인 실패! 이메일이나 비밀번호를 확인하세요.");
         }
+        return loggedInUser;
     }
 
     public void register(Scanner sc) {
