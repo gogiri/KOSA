@@ -147,6 +147,15 @@ public class UserController2 {
           }
       }
   }
+public static UserManager getUserManager() {
+	return userManager;
+}
+public static void setUserManager(UserManager userManager) {
+	UserController2.userManager = userManager;
+}
+public static void setLoggedInUser(User loggedInUser) {
+	UserController2.loggedInUser = loggedInUser;
+}
   
 
 }
