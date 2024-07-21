@@ -3,39 +3,40 @@ package com.msa2024.club.model;
 import javax.annotation.processing.Generated;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.msa2024.user.model.User;
 
 public class Club{
 
 	@JsonProperty("clubNumber")
-	private int clubNumber;
+	private int clubNumber;			//1. 방 번호
 
-	@JsonProperty("email") // user의 이메일로 처리예정
-	private String host;
+	@JsonProperty("email")
+	private String email;			//2. 이메일
 
 	@JsonProperty("menuType")
-	private String menuType;
+	private String menuType;		//3. 메뉴 종류
 
 	@JsonProperty("matchName")
-	private String matchName;
+	private String matchName;		//4. 방 제목
 
 	@JsonProperty("matchMaxSize")
-	private int matchMaxSize;
+	private int matchMaxSize;		//5. 최대 인원
 
 	@JsonProperty("matchDate")
-	private String matchDate;
+	private String matchDate;		//6. 소모임 날짜
 
 	@JsonProperty("matchTime")
-	private String matchTime;
+	private String matchTime;		//7. 소모임 시간
 
 	@JsonProperty("matchPlace")
-	private String matchPlace;
+	private String matchPlace;		//8. 소모임 장소
 
 //	@JsonProperty("isDelivery")
-	private String isDelivery;
+	private String isDelivery;		//9. 배달 여부
 
-	public Club(int clubNumber, String menuType, String matchName, int matchMaxSize, String matchDate, String matchTime, String matchPlace,
+	public Club(int clubNumber, String userEmail, String menuType, String matchName, int matchMaxSize, String matchDate, String matchTime, String matchPlace,
 			String isDelivery) {
-		
+		this.email = userEmail;
 		this.clubNumber = clubNumber;
 		this.menuType = menuType;
 		this.matchName = matchName;
@@ -113,11 +114,12 @@ public class Club{
 	public void setIsDelivery(String isDelivery) {
 		this.isDelivery = isDelivery;
 	}
-	public String getHost() {
-		return host;
+	public String getEmail() {
+		return email;
 	}
-	public void setHost(String host) {
-		this.host = host;
+	public void setEmail(String email) {
+		this.email = email;
 	}
+
 	
 }
