@@ -6,20 +6,11 @@ import com.msa2024.club.service.ClubServiceImpl;
 import com.msa2024.user.model.User;
 
 public class ClubController {
-	public ClubController() {
-	}
-	
+
 	ClubServiceImpl cs = new ClubServiceImpl();
-	private User loggedInUser;
 	private boolean exitRequested = false;
-	
-	public ClubController(User loggedInUser) {
-		this.loggedInUser = loggedInUser;
-	}
-	
 	public void run() {
 		Scanner sc = new Scanner(System.in);
-		System.out.println("loggedInUser" + loggedInUser);
 		while (true) {
 			System.out.println("\n===== 소모임 =====");
 			System.out.println("[메뉴 선택]");
@@ -40,39 +31,19 @@ public class ClubController {
 					break;
 				case "2":
 					// 등록 로직
-					if (loggedInUser != null) {
-                        cs.makingClub(loggedInUser.getEmail()); // Pass user email
-                    } else {
-                        System.out.println("로그인 후 등록할 수 있습니다.");
-                    }
-					cs.makingClub(loggedInUser.getEmail());
+					cs.makingClub("yoonchaemin@daum.net");
 					break;
 				case "3":
 					// 삭제 로직
-					if (loggedInUser != null) {
-                        cs.makingClub(loggedInUser.getEmail()); // Pass user email
-                    } else {
-                        System.out.println("로그인 후 등록할 수 있습니다.");
-                    }
-					cs.deleteClub(loggedInUser.getEmail());
+					cs.deleteClub("yoonchaemin@daum.net");
 					break;
 				case "4":
 					// 참가 로직
-					if (loggedInUser != null) {
-                        cs.makingClub(loggedInUser.getEmail()); // Pass user email
-                    } else {
-                        System.out.println("로그인 후 등록할 수 있습니다.");
-                    }
-					cs.addClub(loggedInUser.getEmail());
+					cs.addClub("yoonchaemin@daum.net");
 					break;
 				case "5":
 					// 참여 소모임 정보
-					if (loggedInUser != null) {
-                        cs.makingClub(loggedInUser.getEmail()); // Pass user email
-                    } else {
-                        System.out.println("로그인 후 등록할 수 있습니다.");
-                    }
-					cs.printMyClub(loggedInUser.getEmail());
+					cs.printMyClub("yoonchaemin@daum.net");
 					break;
 				case "9":
 					System.out.println("\n[종료]");
