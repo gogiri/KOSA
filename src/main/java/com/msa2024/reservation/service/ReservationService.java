@@ -1,24 +1,25 @@
-package com.msa2024.reservation.controller;
+package com.msa2024.reservation.service;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.List; 
 import java.util.Scanner;
-
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.msa2024.reservation.model.Reservation;
 
-public class ReservationController {
+public class ReservationService {
     private List<Reservation> reservations;
     private String filePath;
     private ObjectMapper objectMapper;
 
-    public ReservationController(String filePath) {
+    public ReservationService(String filePath) {
         this.filePath = filePath;
         this.objectMapper = new ObjectMapper();
         this.reservations = new ArrayList<>();
@@ -26,18 +27,29 @@ public class ReservationController {
     }
 
     public void addReservation(Scanner sc) {
-        System.out.println("새로운 예약을 추가합니다.");
-        System.out.print("회의실 번호를 입력하세요: ");
+        System.out.println("일주일 단위로 예약이 가능합니다.");
+        System.out.print("\n회의실 번호를 입력하세요(1~3): ");
         int roomSeq = sc.nextInt();
         sc.nextLine();
         System.out.print("이메일을 입력하세요: ");
         String email = sc.nextLine();
-        System.out.print("전화번호를 입력하세요: ");
+        System.out.print("전화번호를 입력하세요 (예 01012345678): ");
         String telePhone = sc.nextLine();
-        System.out.print("예약 날짜를 입력하세요 (예: 2023-07-01): ");
+        System.out.print("예약 날짜를 입력하세요 (예 2023-07-01): ");
         String reservationDate = sc.nextLine();
-        System.out.print("예약 시작 시간을 입력하세요 (예: 09:00): ");
+        System.out.print("예약 시작 시간을 입력하세요 (9시~ 18시 사이 (예 09:00)): ");
         String startTime = sc.nextLine();
+
+        // 현재 날짜와 예약 날짜 비교
+        LocalDate today = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate reservationLocalDate = LocalDate.parse(reservationDate, formatter);
+        long daysBetween = ChronoUnit.DAYS.between(today, reservationLocalDate);
+
+        if (daysBetween > 7 || daysBetween < 0) {
+            System.out.println("\n예약 가능 기간은 오늘날짜로부터 7일 이내입니다.");
+            return;
+        }
 
         Reservation reservation = new Reservation(roomSeq, email, telePhone, reservationDate, startTime);
         reservations.add(reservation);
@@ -61,12 +73,16 @@ public class ReservationController {
                 }
             });
 
+            System.out.println("----------------------------------------------------------");
+            System.out.println("|      날짜      |   시간    |   회의룸    |");
+            System.out.println("----------------------------------------------------------");
             for (Reservation reservation : reservationList) {
-                System.out.println("Room: " + reservation.getRoomSeq() + ", Date: " + reservation.getReservationDate() + ", Start Time: " + reservation.getStartTime());
+                System.out.println("|   " + reservation.getReservationDate() + "   |      " + reservation.getStartTime() + "     |     " + reservation.getRoomSeq() + "    |");
             }
         } catch (IOException e) {
-            System.out.println("Error reading reservation file: " + e.getMessage());
+            System.out.println("예약된 방이 없습니다!");
         }
+        System.out.println("----------------------------------------------------------");
     }
 
     public List<Reservation> getReservationsByEmail(String email) {
@@ -149,7 +165,7 @@ public class ReservationController {
                             whileLoop = false;
                             break;
                         case "2":
-                            System.out.println("예약 삭제가 취소되었습니다.");
+                            System.out.println("예약을 삭제하지 않습니다.");
                             whileLoop = false;
                             break;
                         default:
@@ -167,13 +183,35 @@ public class ReservationController {
         System.out.print("조회할 사람의 이메일을 입력하세요: ");
         String email = sc.nextLine();
         List<Reservation> userReservations = getReservationsByEmail(email);
+        
         if (userReservations.isEmpty()) {
             System.out.println("해당 이메일의 예약이 없습니다.");
         } else {
-            System.out.println("해당 이메일의 예약 목록:");
+            // 예약 목록을 날짜, 시간, 회의룸 순서로 정렬
+            Collections.sort(userReservations, new Comparator<Reservation>() {
+                @Override
+                public int compare(Reservation r1, Reservation r2) {
+                    int dateComparison = r1.getReservationDate().compareTo(r2.getReservationDate());
+                    if (dateComparison != 0) {
+                        return dateComparison;
+                    }
+                    int timeComparison = r1.getStartTime().compareTo(r2.getStartTime());
+                    if (timeComparison != 0) {
+                        return timeComparison;
+                    }
+                    return Integer.compare(r1.getRoomSeq(), r2.getRoomSeq());
+                }
+            });
+
+            // 예약 목록 출력
+            System.out.println("나의 예약 목록");
+            System.out.println("------------------------------------------------------");
+            System.out.println("|      날짜      |       시간      |       회의룸     |");
+            System.out.println("------------------------------------------------------");
             for (Reservation reservation : userReservations) {
-                System.out.println(reservation);
+               System.out.println("|   " + reservation.getReservationDate() + "   | " + reservation.getStartTime() + "  |     " + reservation.getRoomSeq() + "    |");
             }
+            System.out.println("------------------------------------------------------");
         }
     }
 
@@ -181,7 +219,7 @@ public class ReservationController {
         try {
             objectMapper.writeValue(new File(filePath), reservations);
         } catch (IOException e) {
-            System.out.println("예약 파일 저장 중 오류 발생: " + e.getMessage());
+            System.out.println("예약할 수 없습니다!");
         }
     }
 
@@ -194,7 +232,7 @@ public class ReservationController {
                 reservations = new ArrayList<>();
             }
         } catch (IOException e) {
-            System.out.println("예약 파일 불러오는 중 오류 발생: " + e.getMessage());
+            System.out.println("예약 내용을 확인할 수 없습니다!");
             reservations = new ArrayList<>();
         }
     }

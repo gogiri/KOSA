@@ -13,11 +13,15 @@ public class LocalDateTimeAdapter extends TypeAdapter<LocalDateTime> {
 
     @Override
     public void write(JsonWriter jsonWriter, LocalDateTime localDateTime) throws IOException {
-        jsonWriter.value(localDateTime.format(formatter));
+        if (localDateTime == null) {
+            jsonWriter.nullValue();
+        } else {
+            jsonWriter.value(localDateTime.format(formatter));
+        }
     }
 
     @Override
     public LocalDateTime read(JsonReader jsonReader) throws IOException {
-        return LocalDateTime.parse(jsonReader.nextString(), formatter);
+        return jsonReader.peek() == com.google.gson.stream.JsonToken.NULL ? null : LocalDateTime.parse(jsonReader.nextString(), formatter);
     }
 }

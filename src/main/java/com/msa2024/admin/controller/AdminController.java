@@ -4,6 +4,7 @@ import com.msa2024.admin.entity.AdminManager;
 import com.msa2024.admin.service.AdminService;
 import com.msa2024.admin.service.AdminServiceImpl;
 import com.msa2024.user.model.UserManager;
+import com.msa2024.user.service.UserService;
 
 import java.util.Scanner;
 
@@ -12,10 +13,16 @@ public class AdminController {
     private AdminManager adminManager;
     private AdminService adminService;
 
-    public AdminController(UserManager userManager) {
+
+    public AdminController(UserManager userManager, UserService userService) {
         this.adminManager = new AdminManager(userManager);
-        this.adminService = new AdminServiceImpl(adminManager);
+        this.adminService = new AdminServiceImpl(adminManager, userService);
     }
+
+    public AdminController() {
+
+    }
+
 
     public void run() {
         adminView(new Scanner(System.in));

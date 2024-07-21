@@ -5,21 +5,31 @@ import com.msa2024.user.model.User;
 import com.msa2024.user.model.UserManager;
 import com.msa2024.util.GenericFileUtil;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 public class AdminManager {
     private UserManager userManager;
-    private List<User> announcements;
-    private GenericFileUtil<User> fileUtil;
+    private List<String> announcements;
+    private GenericFileUtil<User> userFileUtil;
+    private GenericFileUtil<String> announcementFileUtil;
     private List<String> activityLogs = new ArrayList<>(); // 활동 로그 목록
     private static final String ANNOUNCEMENTS_FILE = "announcements.json";
 
     public AdminManager(UserManager userManager) {
         this.userManager = userManager;
-        this.fileUtil = new GenericFileUtil<>("src/main/resources/");
-        this.announcements = fileUtil.readFromFileWithJackson(ANNOUNCEMENTS_FILE, new TypeReference<List<User>>() {});
+        this.userFileUtil = new GenericFileUtil<>("src/main/resources/");
+        this.announcementFileUtil = new GenericFileUtil<>("src/main/resources/");
+
+        try {
+            this.announcementFileUtil.createFileIfNotExists(ANNOUNCEMENTS_FILE); // 파일이 없으면 생성
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        this.announcements = announcementFileUtil.readFromFileWithJackson(ANNOUNCEMENTS_FILE, new TypeReference<List<String>>() {});
 
         if (this.announcements == null) {
             this.announcements = new ArrayList<>();
@@ -40,7 +50,7 @@ public class AdminManager {
     private void saveUsers() {
         // 사용자 정보를 파일이나 데이터베이스에 저장하는 로직을 구현합니다.
         // 여기서는 GenericFileUtil을 사용하여 파일에 저장하는 예시를 제공합니다.
-        fileUtil.writeToFile("users.json", userManager.listUsers());
+        userFileUtil.writeToFileWithJackson("students.json", userManager.listUsers());
     }
 
     public List<User> listAllUsers() {
@@ -109,15 +119,15 @@ public class AdminManager {
         }
     }
 
-    public void addAnnouncement(User announcement) {
+    public void addAnnouncement(String announcement) {
         announcements.add(announcement);
-        fileUtil.writeToFile(ANNOUNCEMENTS_FILE, announcements);
+        announcementFileUtil.writeToFileWithJackson(ANNOUNCEMENTS_FILE, announcements);
         System.out.println("공지사항이 추가되었습니다.");
     }
 
     public void listAnnouncements() {
         System.out.println("공지사항 목록:");
-        for (User announcement : announcements) {
+        for (String announcement : announcements) {
             System.out.println("- " + announcement);
         }
     }
@@ -133,11 +143,11 @@ public class AdminManager {
         }
     }
 
-    public List<User> getAnnouncements() {
+    public List<String> getAnnouncements() {
         return announcements;
     }
 
-    public void addAnnouncement(String announcement) {
+    public void setAnnouncements(List<String> announcements) {
         this.announcements = announcements;
     }
 }

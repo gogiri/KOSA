@@ -1,17 +1,18 @@
 package com.msa2024;
 
 import java.util.Scanner;
+
 import com.msa2024.admin.controller.AdminController;
 import com.msa2024.club.controller.ClubController;
+import com.msa2024.reservation.controller.ReservationController;
 import com.msa2024.user.controller.UserController2;
 import com.msa2024.user.model.Role;
-import com.msa2024.user.model.User;
 
 public class Main2 {
-
+    private static AdminController adminController = new AdminController();
     private static UserController2 userController = new UserController2();
     private static ClubController clubController = new ClubController();
-    private static AdminController adminController;
+    private static ReservationController reservationController = new ReservationController();
     private static ProgramState state = ProgramState.MAIN_MENU;  // 프로그램 상태 변수
 
     public static void main(String[] args) {
@@ -51,6 +52,9 @@ public class Main2 {
                     case ADMIN_MENU:
                         showAdminMenu(sc);
                         break;
+                    case RESERVATION_MENU:
+                      showReservationMenu(sc);
+                      break;
                     case CLUB_MENU:
                         showClubMenu(sc);
                         break;
@@ -116,12 +120,14 @@ public class Main2 {
             String choice = sc.nextLine();
             switch (choice) {
                 case "1":
-                    User loggedInUser = UserController2.login(sc);
-                    if (loggedInUser != null) {
-                        if (loggedInUser.getRole() == Role.USER) {
+                    UserController2.login(sc);
+                    if (UserController2.getLoggedInUser() != null) {
+                      Role role = UserController2.getLoggedInUser().getRole();
+                      System.out.println("관리자 : " + UserController2.getLoggedInUser().getRole());
+                        if (role == Role.STUDENT) {
                             state = ProgramState.USER_MENU;
-                        } else if (loggedInUser.getRole() == Role.ADMIN) {
-                            adminController = new AdminController(UserController2.getUserManager());
+                            System.out.println("로그인한 사용자 역할: " + role);
+                        } else if (UserController2.getLoggedInUser().getRole() == Role.ADMIN) {
                             state = ProgramState.ADMIN_MENU;
                         }
                     }
@@ -142,8 +148,34 @@ public class Main2 {
     }
 
     private static void showUserMenu(Scanner sc) {
-        userController.userView(sc);
-        state = ProgramState.MAIN_MENU;
+        System.out.println("\n[INFO] 메뉴를 선택해주세요!!\n"
+                + "[1] 회의실 예약\t[2] 소모임 예약\t[3] 로그아웃");
+        System.out.print("메뉴 => ");
+
+        if (sc.hasNextLine()) {
+            String choice = sc.nextLine();
+            switch (choice) {
+                case "1":
+                    System.out.println(UserController2.getLoggedInUser().getEmail());
+                    // 회의실 예약 기능
+                    // meetingRoomController.run();
+                    state = ProgramState.RESERVATION_MENU;
+                    
+                    break;
+                case "2":
+                    state = ProgramState.CLUB_MENU;
+                    break;
+                case "3":
+                    userController.logout();
+                    state = ProgramState.MAIN_MENU;
+                    break;
+                default:
+                    System.out.println("\n없는 메뉴입니다. 다시 선택하세요.");
+                    break;
+            }
+        } else {
+            state = ProgramState.EXIT;
+        }
     }
 
     private static void showAdminMenu(Scanner sc) {
@@ -159,9 +191,20 @@ public class Main2 {
     private static void showClubMenu(Scanner sc) {
         clubController.run();
         if (clubController.isExitRequested()) {
-            state = ProgramState.EXIT;
-        } else {
+            //state = ProgramState.EXIT;
             state = ProgramState.USER_MENU;
+        } else {
+            state = ProgramState.EXIT;
         }
     }
+    
+    private static void showReservationMenu(Scanner sc) {
+      reservationController.run();
+      if (reservationController.isExitRequested()) {
+          //state = ProgramState.EXIT;
+          state = ProgramState.USER_MENU;
+      } else {
+          state = ProgramState.EXIT;
+      }
+  }
 }

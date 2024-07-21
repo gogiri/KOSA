@@ -2,14 +2,18 @@ package com.msa2024.admin.service;
 
 import com.msa2024.admin.entity.AdminManager;
 import com.msa2024.user.model.User;
+import com.msa2024.user.service.UserService;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class AdminServiceImpl implements AdminService {
     private AdminManager adminManager;
+    private UserService userService;
 
-    public AdminServiceImpl(AdminManager adminManager) {
+    public AdminServiceImpl(AdminManager adminManager, UserService userService) {
         this.adminManager = adminManager;
+        this.userService = userService;
     }
 
     @Override
@@ -22,7 +26,25 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public void blockUser(String email, int hours) {
-        adminManager.blockUser(email, hours);
+        User user = userService.getUsers().stream()
+                .filter(u -> u.getEmail().equalsIgnoreCase(email))
+                .findFirst()
+                .orElse(null);
+
+        if (user != null) {
+            LocalDateTime blockedUntilDateTime = LocalDateTime.now().plusHours(hours);
+            user.setBlockDate(blockedUntilDateTime.toLocalDate());
+            user.addWarning();
+            // Assuming you have a method to save the updated user data
+            saveUsers();
+            System.out.println("사용자 " + email + "이 " + blockedUntilDateTime + "까지 차단되었습니다.");
+        } else {
+            System.out.println("사용자를 찾을 수 없습니다.");
+        }
+    }
+
+    private void saveUsers() {
+        // Implement this method to persist user changes
     }
 
     @Override

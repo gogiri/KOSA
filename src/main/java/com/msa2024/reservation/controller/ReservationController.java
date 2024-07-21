@@ -1,17 +1,20 @@
-package com.msa2024.reservation.reservationMain;
+package com.msa2024.reservation.controller;
 
 import java.util.Scanner;
-import com.msa2024.reservation.controller.ReservationController;
 
-public class ReservationMain {
-    public static void main(String[] args) {
-        String filePath = "C:\\Users\\KOSA\\git\\KOSA\\src\\test\\resources\\reservations.json";
-        ReservationController controller = new ReservationController(filePath);
+import com.msa2024.reservation.service.ReservationService;
+
+public class ReservationController {
+  private boolean exitRequested = false;
+    public void run() {
+        
+        String filePath = "C:\\Edu\\WS-KSJ\\KOSAproject\\src\\test\\resources\\reservations.json";
+        ReservationService controller = new ReservationService(filePath);
         Scanner sc = new Scanner(System.in);
 
-        boolean whileLoop = true;
+        //boolean whileLoop = true;
         
-        while (whileLoop) {
+        while (true) {
             try {
                 System.out.println("\n=====[선택]=====");
                 System.out.println("\n1.전체조회");
@@ -46,8 +49,9 @@ public class ReservationMain {
                         break;
                     case "6":
                         System.out.println("\n[종료]");
-                        whileLoop = false;
-                        break;
+                        exitRequested = true;
+                        
+                        return;
                     default:
                         System.out.println("\n1 ~ 6번 중 선택해 주세요.");
                 }
@@ -55,8 +59,14 @@ public class ReservationMain {
                 e.printStackTrace();
             }
         }
+        /*
         sc.close();
         System.out.println("\n=====Good Bye=====");
         System.exit(0);
+        */
+        
     }
+    public boolean isExitRequested() {
+      return exitRequested;
+  }
 }
