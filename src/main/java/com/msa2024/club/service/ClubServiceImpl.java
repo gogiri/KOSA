@@ -291,22 +291,4 @@ public class ClubServiceImpl implements ClubService {
 	        e.printStackTrace();
 	    }
 	}
-
-	@Override
-	public void makingClub() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void deleteClub() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void addClub() {
-		// TODO Auto-generated method stub
-		
-	}
 }

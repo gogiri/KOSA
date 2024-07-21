@@ -3,7 +3,8 @@ package com.msa2024.club.service;
 public interface ClubService {
 	
 	void printClub();
-	void makingClub();
-	void deleteClub();
-	void addClub();
+	void makingClub(String userEmail);
+	void deleteClub(String userEmail);
+	void addClub(String userEmail);
+	void printMyClub(String userEmail);
 }
