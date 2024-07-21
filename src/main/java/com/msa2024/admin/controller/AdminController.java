@@ -19,10 +19,6 @@ public class AdminController {
         this.adminService = new AdminServiceImpl(adminManager, userService);
     }
 
-    public AdminController() {
-
-    }
-
 
     public void run() {
         adminView(new Scanner(System.in));
