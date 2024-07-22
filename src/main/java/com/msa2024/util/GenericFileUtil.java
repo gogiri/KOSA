@@ -6,6 +6,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 
 public class GenericFileUtil<T> {
@@ -28,13 +29,13 @@ public class GenericFileUtil<T> {
     public List<T> readFromFileWithJackson(String filename, TypeReference<List<T>> typeReference) {
         try {
             File file = new File(basePath + filename);
-            if (!file.exists()) {
-                return null;
+            if (!file.exists() || file.length() == 0) { // 파일이 존재하지 않거나 비어 있는 경우
+                return Collections.emptyList();
             }
             return objectMapper.readValue(file, typeReference);
         } catch (IOException e) {
             e.printStackTrace();
-            return null;
+            return Collections.emptyList();
         }
     }
 

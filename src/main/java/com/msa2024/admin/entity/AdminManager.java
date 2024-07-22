@@ -20,8 +20,8 @@ public class AdminManager {
 
     public AdminManager(UserManager userManager) {
         this.userManager = userManager;
-        this.userFileUtil = new GenericFileUtil<>("src/main/resources/");
-        this.announcementFileUtil = new GenericFileUtil<>("src/main/resources/");
+        this.userFileUtil = new GenericFileUtil<>("src/main/java/resources/");
+        this.announcementFileUtil = new GenericFileUtil<>("src/main/java/resources/");
 
         try {
             this.announcementFileUtil.createFileIfNotExists(ANNOUNCEMENTS_FILE); // 파일이 없으면 생성
@@ -30,7 +30,6 @@ public class AdminManager {
         }
 
         this.announcements = announcementFileUtil.readFromFileWithJackson(ANNOUNCEMENTS_FILE, new TypeReference<List<String>>() {});
-
         if (this.announcements == null) {
             this.announcements = new ArrayList<>();
         }

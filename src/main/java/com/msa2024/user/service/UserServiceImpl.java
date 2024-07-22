@@ -1,47 +1,42 @@
 package com.msa2024.user.service;
 
-import java.io.File;
-import java.io.IOException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.msa2024.user.model.AttendanceRecord;
 import com.msa2024.user.model.Role;
 import com.msa2024.user.model.User;
+import com.msa2024.util.GenericFileUtil;
 import com.msa2024.util.InputValidator;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.*;
 
 public class UserServiceImpl implements UserService {
 
   private Map<String, User> users = new HashMap<>();
   private Map<String, AttendanceRecord> currentSessions = new HashMap<>();
+  private GenericFileUtil<User> fileUtil;
 
   public UserServiceImpl(String filePath) {
+    this.fileUtil = new GenericFileUtil<>("src/main/java/resources/");
     loadUsersSignUpFile(filePath);
   }
 
   @Override
   public void loadUsersSignUpFile(String filePath) {
-    ObjectMapper objectMapper = new ObjectMapper();
     try {
-      List<Map<String, String>> userList = objectMapper.readValue(new File(filePath), new TypeReference<List<Map<String, String>>>() {});
-      for (Map<String, String> userMap : userList) {
-        String email = userMap.get("email");
-        String name = userMap.get("name");
-        String phoneNumber = userMap.get("phone_number");
-        String password = userMap.get("password"); // 파일에서 비밀번호를 직접 가져옵니다.
-        Role role = Role.valueOf(userMap.get("role"));
-        LocalDate blockDate = LocalDate.parse(userMap.get("blockDate")); // 파일에서 blockDate를 직접 가져옵니다.
-        User user = new User(email, name, phoneNumber, password, role, blockDate);
-        users.put(email, user);
-        System.out.println("[userMap] : " + userMap.toString()); // 디버깅 메시지
+      List<User> userList = fileUtil.readFromFileWithJackson(filePath, new TypeReference<List<User>>() {});
+      if (userList != null) {
+        for (User user : userList) {
+          users.put(user.getEmail(), user);
+          System.out.println("[User] : " + user.toString());
+        }
+      } else {
+        System.out.println("User list is null.");
       }
-    } catch (IOException e) {
+    } catch (Exception e) {
       System.out.println("Error reading user file: " + e.getMessage());
+      e.printStackTrace();
     }
   }
 
@@ -57,17 +52,17 @@ public class UserServiceImpl implements UserService {
       return false;
     }
 
-    if(!InputValidator.isValidName(name)) {
+    if (!InputValidator.isValidName(name)) {
       System.out.println("이름 형식이 잘못되었습니다!!");
       return false;
     }
 
-    if(!InputValidator.isValidEmail(email)) {
+    if (!InputValidator.isValidEmail(email)) {
       System.out.println("이메일 형식이 잘못되었습니다!!");
       return false;
     }
 
-    if(!InputValidator.isValidPhoneNumber(phone_number)) {
+    if (!InputValidator.isValidPhoneNumber(phone_number)) {
       System.out.println("전화번호 형식이 잘못되었습니다!!");
       return false;
     }
@@ -75,12 +70,20 @@ public class UserServiceImpl implements UserService {
     LocalDate blockDate = LocalDate.now().plusMonths(6);
     User user = new User(email, name, phone_number, password, role, blockDate);
     users.put(email, user);
+    saveUsers();
     System.out.println("회원가입이 완료되었습니다!!. 해당 계정은 6개월 후에 잠길 예정입니다.");
     return true;
   }
 
+  private void saveUsers() {
+    List<User> userList = new ArrayList<>(users.values());
+    fileUtil.writeToFileWithJackson("users.json", userList);
+  }
+
   @Override
   public User login(String email, String password) {
+    System.out.println("로그인 시도 - 이메일: " + email + ", 비밀번호: " + password);
+
     if (!users.containsKey(email)) {
       System.out.println("이메일 정보가 일치하지 않습니다.");
       return null;
@@ -92,18 +95,8 @@ public class UserServiceImpl implements UserService {
       return null;
     }
 
-    if(!InputValidator.isValidEmail(email)) {
+    if (!InputValidator.isValidEmail(email)) {
       System.out.println("이메일 형식이 잘못되었습니다!!");
-      return null;
-    }
-
-    if(!InputValidator.isValidPassword(password)) {
-      System.out.println("비밀번호 형식이 잘못되었습니다.");
-      return null;
-    }
-
-    if(user.getRole().equals(Role.PROFESSOR) || user.getRole().equals(Role.USER)) {
-      System.out.println("관리자 및 학생만 로그인이 가능합니다!");
       return null;
     }
 
@@ -114,7 +107,7 @@ public class UserServiceImpl implements UserService {
       currentSessions.put(email, record);
       return user;
     } else {
-      System.out.println("Incorrect password.");
+      System.out.println("비밀번호가 일치하지 않습니다.");
       return null;
     }
   }
@@ -125,6 +118,7 @@ public class UserServiceImpl implements UserService {
       AttendanceRecord record = currentSessions.remove(email);
       record.setLogoutTime(LocalDateTime.now());
       System.out.println("Logout successful.");
+
       if (record.isEarlyLeave()) {
         System.out.println(record.getFormatterLogoutTime() + "기타사유로 인한 조퇴");
       }
@@ -151,11 +145,11 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public void showAdminFunction() {
-    // TODO Auto-generated method stub
+    // 구현 생략
   }
 
   @Override
   public void showUserFunction() {
-    // TODO Auto-generated method stub
+    // 구현 생략
   }
 }
