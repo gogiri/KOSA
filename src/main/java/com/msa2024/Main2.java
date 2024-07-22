@@ -7,11 +7,11 @@ import com.msa2024.club.controller.ClubController;
 import com.msa2024.reservation.controller.ReservationController;
 import com.msa2024.user.controller.UserController2;
 import com.msa2024.user.model.Role;
+import com.msa2024.user.model.User;
 
 public class Main2 {
     private static AdminController adminController = new AdminController();
     private static UserController2 userController = new UserController2();
-    private static ClubController clubController = new ClubController();
     private static ReservationController reservationController = new ReservationController();
     private static ProgramState state = ProgramState.MAIN_MENU;  // 프로그램 상태 변수
 
@@ -189,9 +189,12 @@ public class Main2 {
     }
 
     private static void showClubMenu(Scanner sc) {
+        // 로그인된 유저 정보를 가져와 ClubController에 전달
+        User loggedInUser = UserController2.getLoggedInUser();
+        ClubController clubController = new ClubController(loggedInUser);
+        
         clubController.run();
         if (clubController.isExitRequested()) {
-            //state = ProgramState.EXIT;
             state = ProgramState.USER_MENU;
         } else {
             state = ProgramState.EXIT;
