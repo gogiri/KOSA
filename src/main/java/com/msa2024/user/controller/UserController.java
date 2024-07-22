@@ -2,18 +2,17 @@ package com.msa2024.user.controller;
 
 import java.util.Scanner;
 
-import com.msa2024.club.controller.ClubController;
 import com.msa2024.user.model.Role;
 import com.msa2024.user.model.User;
 import com.msa2024.user.model.UserManager;
 import com.msa2024.user.service.UserServiceImpl;
 
-public class UserController2 {
+public class UserController {
 
     private static UserManager userManager;
     private static User loggedInUser;
     //private static ClubController clubController = new ClubController();
-    public UserController2() {
+    public UserController() {
         UserServiceImpl service = new UserServiceImpl("students.json");
         userManager = new UserManager(service);
         System.out.println(userManager.toString());

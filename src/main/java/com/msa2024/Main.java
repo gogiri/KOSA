@@ -5,15 +5,15 @@ import java.util.Scanner;
 import com.msa2024.admin.controller.AdminController;
 import com.msa2024.club.controller.ClubController;
 import com.msa2024.reservation.controller.ReservationController;
-import com.msa2024.user.controller.UserController2;
+import com.msa2024.user.controller.UserController;
 import com.msa2024.user.model.Role;
 import com.msa2024.user.model.User;
 import com.msa2024.user.service.UserService;
 import com.msa2024.user.service.UserServiceImpl;
 
-public class Main2 {
+public class Main {
     //private static AdminController adminController = new AdminController();
-    private static UserController2 userController = new UserController2();
+    private static UserController userController = new UserController();
     private static ReservationController reservationController = new ReservationController();
     private static UserService userService = new UserServiceImpl("src/main/java/resources/students.json");
     private static ClubController clubController;
@@ -87,14 +87,14 @@ public class Main2 {
                     state = ProgramState.LOGIN_REGISTER;
                     break;
                 case "2":
-                    if (UserController2.getLoggedInUser() != null && UserController2.getLoggedInUser().getRole() == Role.USER) {
+                    if (UserController.getLoggedInUser() != null && UserController.getLoggedInUser().getRole() == Role.USER) {
                         state = ProgramState.USER_MENU;
                     } else {
                         System.out.println("\n로그인 후 이용 가능합니다.");
                     }
                     break;
                 case "3":
-                    if (UserController2.getLoggedInUser() != null && UserController2.getLoggedInUser().getRole() == Role.ADMIN) {
+                    if (UserController.getLoggedInUser() != null && UserController.getLoggedInUser().getRole() == Role.ADMIN) {
                         state = ProgramState.ADMIN_MENU;
                     } else {
                         System.out.println("\n관리자만 이용 가능합니다.");
@@ -125,14 +125,14 @@ public class Main2 {
             String choice = sc.nextLine();
             switch (choice) {
                 case "1":
-                    UserController2.login(sc);
-                    if (UserController2.getLoggedInUser() != null) {
-                      Role role = UserController2.getLoggedInUser().getRole();
-                      System.out.println("관리자 : " + UserController2.getLoggedInUser().getRole());
+                    UserController.login(sc);
+                    if (UserController.getLoggedInUser() != null) {
+                      Role role = UserController.getLoggedInUser().getRole();
+                      System.out.println("관리자 : " + UserController.getLoggedInUser().getRole());
                         if (role == Role.STUDENT) {
                             state = ProgramState.USER_MENU;
                             System.out.println("로그인한 사용자 역할: " + role);
-                        } else if (UserController2.getLoggedInUser().getRole() == Role.ADMIN) {
+                        } else if (UserController.getLoggedInUser().getRole() == Role.ADMIN) {
                             state = ProgramState.ADMIN_MENU;
                         }
                     }
@@ -161,7 +161,7 @@ public class Main2 {
             String choice = sc.nextLine();
             switch (choice) {
                 case "1":
-                    System.out.println(UserController2.getLoggedInUser().getEmail());
+                    System.out.println(UserController.getLoggedInUser().getEmail());
                     // 회의실 예약 기능
                     // meetingRoomController.run();
                     state = ProgramState.RESERVATION_MENU;
@@ -195,7 +195,7 @@ public class Main2 {
 
     private static void showClubMenu(Scanner sc) {
         // 로그인된 유저 정보를 가져와 ClubController에 전달
-        User loggedInUser = UserController2.getLoggedInUser();
+        User loggedInUser = UserController.getLoggedInUser();
         ClubController clubController = new ClubController(loggedInUser);
         
         clubController.run();
