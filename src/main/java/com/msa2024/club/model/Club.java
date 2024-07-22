@@ -1,12 +1,17 @@
 package com.msa2024.club.model;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 import javax.annotation.processing.Generated;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.msa2024.user.model.User;
+import com.msa2024.util.DateUtil;
 
 public class Club{
-
+	
+	
 	@JsonProperty("clubNumber")
 	private int clubNumber;			//1. 방 번호
 
@@ -23,7 +28,7 @@ public class Club{
 	private int matchMaxSize;		//5. 최대 인원
 
 	@JsonProperty("matchDate")
-	private String matchDate;		//6. 소모임 날짜
+	private String matchDate = DateUtil.getCurrentDateTime().substring(0, 10);		//6. 소모임 날짜
 
 	@JsonProperty("matchTime")
 	private String matchTime;		//7. 소모임 시간
@@ -34,14 +39,13 @@ public class Club{
 //	@JsonProperty("isDelivery")
 	private String isDelivery;		//9. 배달 여부
 
-	public Club(int clubNumber, String userEmail, String menuType, String matchName, int matchMaxSize, String matchDate, String matchTime, String matchPlace,
+	public Club(int clubNumber, String userEmail, String menuType, String matchName, int matchMaxSize, String matchTime, String matchPlace,
 			String isDelivery) {
 		this.email = userEmail;
 		this.clubNumber = clubNumber;
 		this.menuType = menuType;
 		this.matchName = matchName;
 		this.matchMaxSize = matchMaxSize;
-		this.matchDate = matchDate;
 		this.matchTime = matchTime;
 		this.matchPlace = matchPlace;
 		this.isDelivery = isDelivery;

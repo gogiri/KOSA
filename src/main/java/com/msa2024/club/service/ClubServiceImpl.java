@@ -25,7 +25,7 @@ public class ClubServiceImpl implements ClubService {
 
 	}
 
-	static final String CLUBFILEPATH = "src/main/resources/club.json";
+	static final String CLUBFILEPATH = "src/main/java/resources/club.json";
 
 	
 	// 1. 전체 출력 (Club JSON 파일을 로드하고 출력하는 함수)
@@ -43,13 +43,13 @@ public class ClubServiceImpl implements ClubService {
 			// 모든 Club 객체의 내용을 출력
 			for (Club club : clubs) {
 				if (!printedClubNumbers.contains(club.getClubNumber())) {
-					System.out.println("소모임 번호: " + club.getClubNumber());
+					System.out.println("모임 번호: " + club.getClubNumber());
 					System.out.println("음식 종류: " + club.getMenuType());
 					System.out.println("방 이름: " + club.getMatchName());
 					System.out.println("최대 인원: " + club.getMatchMaxSize());
-					System.out.println("소모임 날짜: " + club.getMatchDate());
-					System.out.println("소모임 시간: " + club.getMatchTime());
-					System.out.println("소모임 장소: " + club.getMatchPlace());
+					System.out.println("모임 날짜: " + club.getMatchDate());
+					System.out.println("모임 시간: " + club.getMatchTime());
+					System.out.println("모임 장소: " + club.getMatchPlace());
 					System.out.println("배달 여부: " + club.getIsDelivery());
 					System.out.println(); // 빈 줄 추가로 구분
 
@@ -70,7 +70,7 @@ public class ClubServiceImpl implements ClubService {
 		ObjectMapper objectMapper = new ObjectMapper();
 
 		// 새로운 Club 객체 생성
-		System.out.println("소모임 번호를 입력하세요: ");
+		System.out.println("모임 번호를 입력하세요: ");
 		String Number = sc.nextLine();
 		int newClubNumber = Integer.parseInt(Number);
 
@@ -86,7 +86,7 @@ public class ClubServiceImpl implements ClubService {
 				// 중복되는 소모임 번호가 있는지 확인
 				for (Club club : clubs) {
 					if ((String.valueOf(club.getClubNumber())).equals(String.valueOf(newClubNumber))) {
-						System.out.println("이미 존재하는 소모임 번호입니다. 등록을 취소합니다.");
+						System.out.println("이미 존재하는 모임 번호입니다. 등록을 취소합니다.");
 						return; // 메서드 종료
 					}
 				}
@@ -94,7 +94,7 @@ public class ClubServiceImpl implements ClubService {
 				for (Club club : clubs) {
 					if (club.getEmail().equals(userEmail)) {
 						System.out.println("이미 존재하는 이메일입니다. 등록을 취소합니다.");
-						System.out.println("해당 이메일이 속한 소모임 번호: " + club.getClubNumber());
+						System.out.println("해당 이메일이 속한 모임 번호: " + club.getClubNumber());
 						return; // 메서드 종료
 					}
 				}
@@ -109,19 +109,16 @@ public class ClubServiceImpl implements ClubService {
 			String max = sc.nextLine();
 			int matchMaxSize = Integer.parseInt(max);
 
-			System.out.println("소모임 날짜를 입력하세요 (예: 2024-07-20): ");
-			String matchDate = sc.nextLine();
-
-			System.out.println("소모임 시간을 입력하세요 (예: 12:00): ");
+			System.out.println("모임 시간을 입력하세요 (예: 12:00): ");
 			String matchTime = sc.nextLine();
 
-			System.out.println("소모임 장소를 입력하세요: ");
+			System.out.println("모임 장소를 입력하세요: ");
 			String matchPlace = sc.nextLine();
 
 			System.out.println("배달 여부를 입력하세요 (true/false): ");
 			String isDelivery = sc.nextLine();
 			
-			Club newClub = new Club(newClubNumber, userEmail, menuType, matchName, matchMaxSize, matchDate, matchTime, matchPlace, isDelivery);
+			Club newClub = new Club(newClubNumber, userEmail, menuType, matchName, matchMaxSize, matchTime, matchPlace, isDelivery);
 
 			// 새로운 소모임을 목록에 추가
 			clubs.add(newClub);
@@ -129,7 +126,7 @@ public class ClubServiceImpl implements ClubService {
 			// 업데이트된 목록을 JSON 파일에 저장
 			objectMapper.writeValue(file, clubs);
 
-			System.out.println("소모임이 성공적으로 추가되었습니다.");
+			System.out.println("모임이 성공적으로 추가되었습니다.");
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.out.println("파일을 읽거나 쓰는 중 오류가 발생했습니다.");
@@ -141,7 +138,7 @@ public class ClubServiceImpl implements ClubService {
 		Scanner sc = new Scanner(System.in);
 		ObjectMapper objectMapper = new ObjectMapper();
 
-		System.out.println("삭제할 소모임 번호를 입력하세요: ");
+		System.out.println("삭제할 모임 번호를 입력하세요: ");
 		int clubNumberToDelete = sc.nextInt();
 
 		try {
@@ -165,9 +162,9 @@ public class ClubServiceImpl implements ClubService {
 			if (found) {
 				// 삭제된 목록을 다시 JSON 파일에 씀
 				objectMapper.writeValue(file, clubs);
-				System.out.println("소모임이 성공적으로 삭제되었습니다.");
+				System.out.println("모임이 성공적으로 삭제되었습니다.");
 			} else {
-				System.out.println("해당 번호의 소모임이 존재하지 않거나, 삭제 권한이 없습니다.");
+				System.out.println("해당 번호의 모임이 존재하지 않거나, 삭제 권한이 없습니다.");
 			}
 
 		} catch (IOException e) {
@@ -203,7 +200,7 @@ public class ClubServiceImpl implements ClubService {
 					if (club.getClubNumber() == clubNumberToJoin) {
 						clubFound = true;
 						if (club.getEmail().equals(userEmail)) {
-							System.out.println("이미 소모임에 참가한 이메일입니다. 참가를 취소합니다.");
+							System.out.println("이미 모임에 참가한 이메일입니다. 참가를 취소합니다.");
 							return; // 메서드 종료
 						}
 						currentMemberCount++;
@@ -211,7 +208,7 @@ public class ClubServiceImpl implements ClubService {
 				}
 
 				if (!clubFound) {
-					System.out.println("해당 번호의 소모임이 존재하지 않습니다.");
+					System.out.println("해당 번호의 모임이 존재하지 않습니다.");
 					return; // 메서드 종료
 				}
 
@@ -226,19 +223,18 @@ public class ClubServiceImpl implements ClubService {
 				// 소모임에 참가
 				for (Club club : clubs) {
 					if (club.getClubNumber() == clubNumberToJoin) {
-						System.out.println("소모임 등록이 완료 되었습니다.");
+						System.out.println("모임 등록이 완료 되었습니다.");
 						String menuType = club.getMenuType();
 						String matchName = club.getMatchName();
 						int matchMaxSize = club.getMatchMaxSize();
-						String matchDate = club.getMatchDate();
 						String matchTime = club.getMatchTime();
 						String matchPlace = club.getMatchPlace();
 						String isDelivery = club.getIsDelivery();
-						Club newClub = new Club(clubNumberToJoin, userEmail, menuType, matchName, matchMaxSize, matchDate, matchTime, matchPlace, isDelivery);
+						Club newClub = new Club(clubNumberToJoin, userEmail, menuType, matchName, matchMaxSize, matchTime, matchPlace, isDelivery);
 
 						// 새로운 참가자를 목록에 추가
 						clubs.add(newClub);
-						System.out.println("소모임에 성공적으로 참가되었습니다.");
+						System.out.println("모임에 성공적으로 참가되었습니다.");
 
 						// 업데이트된 목록을 JSON 파일에 저장
 						objectMapper.writeValue(file, clubs);
@@ -265,13 +261,13 @@ public class ClubServiceImpl implements ClubService {
 	        // 모든 Club 객체의 내용을 탐색하여 이메일이 일치하는 소모임 출력
 	        for (Club club : clubs) {
 	            if (club.getEmail().equals(userEmail)) {
-	                System.out.println("소모임 번호: " + club.getClubNumber());
+	                System.out.println("모임 번호: " + club.getClubNumber());
 	                System.out.println("음식 종류: " + club.getMenuType());
 	                System.out.println("방 이름: " + club.getMatchName());
 	                System.out.println("최대 인원: " + club.getMatchMaxSize());
-	                System.out.println("소모임 날짜: " + club.getMatchDate());
-	                System.out.println("소모임 시간: " + club.getMatchTime());
-	                System.out.println("소모임 장소: " + club.getMatchPlace());
+	                System.out.println("모임 날짜: " + club.getMatchDate());
+	                System.out.println("모임 시간: " + club.getMatchTime());
+	                System.out.println("모임 장소: " + club.getMatchPlace());
 	                System.out.println("배달 여부: " + club.getIsDelivery());
 	                System.out.println(); // 빈 줄 추가로 구분
 
@@ -280,7 +276,7 @@ public class ClubServiceImpl implements ClubService {
 	        }
 
 	        if (!found) {
-	            System.out.println("해당 이메일로 등록된 소모임이 없습니다.");
+	            System.out.println("해당 이메일로 등록된 모임이 없습니다.");
 	        }
 
 	    } catch (IOException e) {
