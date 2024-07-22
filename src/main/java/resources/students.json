@@ -226,9 +226,9 @@
   },
   {
     "email": "leeminbin@kakao.com",
-    "name": "이민빈",
+    "name": "이빈민",
     "phone_number": "012-8908-3923",
-    "password": "3923",
+    "password": "3924",
     "role": "STUDENT",
     "blockDate": [
       2024,
@@ -261,13 +261,27 @@
           34,
           179129000
         ],
-        "formatterLoginTime": "2024.07.22 오후 14:44:34",
-        "formatterLogoutTime": null,
+        "logoutTime": null,
         "earlyLeave": false,
         "late": true,
+        "formatterLogoutTime": null,
+        "formatterLoginTime": "2024.07.22 오후 14:44:34"
+      },
+      {
+        "loginTime": [
+          2024,
+          7,
+          22,
+          17,
+          12,
+          24,
+          254413000
+        ],
         "logoutTime": null,
-        "isLate": true,
-        "isEarlyLeave": false
+        "earlyLeave": false,
+        "late": false,
+        "formatterLogoutTime": null,
+        "formatterLoginTime": "2024.07.22 오후 17:12:24"
       }
     ],
     "warningCount": 0,
@@ -359,7 +373,32 @@
       12,
       31
     ],
-    "attendanceRecords": [],
+    "attendanceRecords": [
+      {
+        "loginTime": [
+          2024,
+          7,
+          22,
+          17,
+          7,
+          45,
+          826410000
+        ],
+        "logoutTime": [
+          2024,
+          7,
+          22,
+          17,
+          11,
+          36,
+          104974000
+        ],
+        "earlyLeave": false,
+        "late": false,
+        "formatterLogoutTime": "2024.07.22 오후 17:11:36",
+        "formatterLoginTime": "2024.07.22 오후 17:07:45"
+      }
+    ],
     "warningCount": 0,
     "blocked": false
   }
