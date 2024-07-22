@@ -1,0 +1,16 @@
+[
+  {
+    "roomSeq": 1,
+    "email": "yoonchaemin@daum.net",
+    "telePhone": "01023067267",
+    "reservationDate": "2024-07-23",
+    "startTime": "10:00"
+  },
+  {
+    "roomSeq": 2,
+    "email": "yoonchaemin@daum.net",
+    "telePhone": "01023067267",
+    "reservationDate": "2024-07-22",
+    "startTime": "09:00"
+  }
+]

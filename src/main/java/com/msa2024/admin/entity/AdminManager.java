@@ -11,13 +11,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AdminManager {
-    private UserManager userManager;
-    private List<String> announcements;
-    private GenericFileUtil<User> userFileUtil;
-    private GenericFileUtil<String> announcementFileUtil;
-    private List<String> activityLogs = new ArrayList<>(); // 활동 로그 목록
-    private static final String ANNOUNCEMENTS_FILE = "announcements.json";
+    private UserManager userManager; // UserManager 인스턴스
+    private List<String> announcements; // 공지사항 목록
+    private GenericFileUtil<User> userFileUtil; // 사용자 파일 유틸리티
+    private GenericFileUtil<String> announcementFileUtil; // 공지사항 파일 유틸리티
+    private static final String ANNOUNCEMENTS_FILE = "announcements.json"; // 공지사항 파일 이름
 
+    /**
+     * AdminManager 생성자
+     * UserManager를 받아서 초기화하고 공지사항 파일을 설정합니다.
+     * @param userManager UserManager 인스턴스
+     */
     public AdminManager(UserManager userManager) {
         this.userManager = userManager;
         this.userFileUtil = new GenericFileUtil<>("src/main/java/resources/");
@@ -39,6 +43,8 @@ public class AdminManager {
 
     /**
      * 이메일을 통해 사용자 검색
+     * @param email 검색할 사용자의 이메일
+     * @return 이메일에 해당하는 User 객체
      */
     private User getUserByEmail(String email) {
         for (User user : userManager.listUsers()) {
@@ -58,6 +64,7 @@ public class AdminManager {
 
     /**
      * 모든 사용자 목록 반환
+     * @return 사용자 목록
      */
     public List<User> listAllUsers() {
         return userManager.listUsers();
@@ -65,6 +72,8 @@ public class AdminManager {
 
     /**
      * 사용자를 차단
+     * @param email 차단할 사용자의 이메일
+     * @param hours 차단 시간(시간 단위)
      */
     public void blockUser(String email, int hours) {
         User user = getUserByEmail(email);
@@ -82,6 +91,7 @@ public class AdminManager {
 
     /**
      * 사용자 차단 해제
+     * @param email 차단 해제할 사용자의 이메일
      */
     public void unblockUser(String email) {
         User user = getUserByEmail(email);
@@ -110,20 +120,10 @@ public class AdminManager {
     }
 
     /**
-     * 노쇼 사용자 확인 및 차단(추후 기능 추가)
-     *
-     *    public void checkNoShows() {
-     *         for (User user : userManager.listUsers()) {
-     *             if (user.getWarningCount() >= 3) {
-     *                 blockUser(user.getEmail(), 72);
-     *             }
-     *         }
-     *     }
-     */
-
-
-    /**
      * 사용자 정보 업데이트
+     * @param email 수정할 사용자의 이메일
+     * @param newName 새로운 이름
+     * @param newPassword 새로운 비밀번호
      */
     public void updateUser(String email, String newName, String newPassword) {
         User user = getUserByEmail(email);
@@ -157,6 +157,7 @@ public class AdminManager {
 
     /**
      * 공지사항 추가
+     * @param announcement 추가할 공지사항 내용
      */
     public void addAnnouncement(String announcement) {
         announcements.add(announcement);
@@ -174,12 +175,9 @@ public class AdminManager {
         }
     }
 
-
-
-
-
     /**
      * 공지사항 반환
+     * @return 공지사항 목록
      */
     public List<String> getAnnouncements() {
         return announcements;
@@ -187,6 +185,7 @@ public class AdminManager {
 
     /**
      * 공지사항 설정
+     * @param announcements 설정할 공지사항 목록
      */
     public void setAnnouncements(List<String> announcements) {
         this.announcements = announcements;

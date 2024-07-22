@@ -1,27 +1,26 @@
 package com.msa2024.reservation.service;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List; 
-import java.util.Scanner;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Scanner;
+
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.msa2024.reservation.model.Reservation;
+import com.msa2024.util.GenericFileUtil;
 
 public class ReservationService {
     private List<Reservation> reservations;
-    private String filePath;
-    private ObjectMapper objectMapper;
+    private GenericFileUtil<Reservation> fileUtil;
+    private static final String RESERVATIONS_FILE = "reservations.json";
 
-    public ReservationService(String filePath) {
-        this.filePath = filePath;
-        this.objectMapper = new ObjectMapper();
+    public ReservationService(String basePath) {
+        this.fileUtil = new GenericFileUtil<>(basePath);
         this.reservations = new ArrayList<>();
         loadReservationsFromFile();
     }
@@ -58,29 +57,25 @@ public class ReservationService {
     }
 
     public void viewReservations() {
-        try {
-            List<Reservation> reservationList = objectMapper.readValue(new File(filePath), new TypeReference<List<Reservation>>() {});
+        List<Reservation> reservationList = fileUtil.readFromFileWithJackson(RESERVATIONS_FILE, new TypeReference<List<Reservation>>() {});
 
-            // 예약 목록을 날짜와 시간순으로 정렬
-            Collections.sort(reservationList, new Comparator<Reservation>() {
-                @Override
-                public int compare(Reservation r1, Reservation r2) {
-                    int dateComparison = r1.getReservationDate().compareTo(r2.getReservationDate());
-                    if (dateComparison != 0) {
-                        return dateComparison;
-                    }
-                    return r1.getStartTime().compareTo(r2.getStartTime());
+        // 예약 목록을 날짜와 시간순으로 정렬
+        Collections.sort(reservationList, new Comparator<Reservation>() {
+            @Override
+            public int compare(Reservation r1, Reservation r2) {
+                int dateComparison = r1.getReservationDate().compareTo(r2.getReservationDate());
+                if (dateComparison != 0) {
+                    return dateComparison;
                 }
-            });
-
-            System.out.println("----------------------------------------------------------");
-            System.out.println("|      날짜      |   시간    |   회의룸    |");
-            System.out.println("----------------------------------------------------------");
-            for (Reservation reservation : reservationList) {
-                System.out.println("|   " + reservation.getReservationDate() + "   |      " + reservation.getStartTime() + "     |     " + reservation.getRoomSeq() + "    |");
+                return r1.getStartTime().compareTo(r2.getStartTime());
             }
-        } catch (IOException e) {
-            System.out.println("예약된 방이 없습니다!");
+        });
+
+        System.out.println("----------------------------------------------------------");
+        System.out.println("|      날짜      |   시간    |   회의룸    |");
+        System.out.println("----------------------------------------------------------");
+        for (Reservation reservation : reservationList) {
+            System.out.println("|   " + reservation.getReservationDate() + "   |      " + reservation.getStartTime() + "     |     " + reservation.getRoomSeq() + "    |");
         }
         System.out.println("----------------------------------------------------------");
     }
@@ -183,7 +178,7 @@ public class ReservationService {
         System.out.print("조회할 사람의 이메일을 입력하세요: ");
         String email = sc.nextLine();
         List<Reservation> userReservations = getReservationsByEmail(email);
-        
+
         if (userReservations.isEmpty()) {
             System.out.println("해당 이메일의 예약이 없습니다.");
         } else {
@@ -209,31 +204,22 @@ public class ReservationService {
             System.out.println("|      날짜      |       시간      |       회의룸     |");
             System.out.println("------------------------------------------------------");
             for (Reservation reservation : userReservations) {
-               System.out.println("|   " + reservation.getReservationDate() + "   | " + reservation.getStartTime() + "  |     " + reservation.getRoomSeq() + "    |");
+                System.out.println("|   " + reservation.getReservationDate() + "   | " + reservation.getStartTime() + "  |     " + reservation.getRoomSeq() + "    |");
             }
             System.out.println("------------------------------------------------------");
         }
     }
 
     private void saveReservationsToFile() {
-        try {
-            objectMapper.writeValue(new File(filePath), reservations);
-        } catch (IOException e) {
-            System.out.println("예약할 수 없습니다!");
-        }
+        fileUtil.writeToFileWithJackson(RESERVATIONS_FILE, reservations);
     }
 
     private void loadReservationsFromFile() {
-        try {
-            File file = new File(filePath);
-            if (file.exists()) {
-                reservations = objectMapper.readValue(file, new TypeReference<List<Reservation>>() {});
-            } else {
-                reservations = new ArrayList<>();
-            }
-        } catch (IOException e) {
-            System.out.println("예약 내용을 확인할 수 없습니다!");
-            reservations = new ArrayList<>();
+        List<Reservation> readReservations = fileUtil.readFromFileWithJackson(RESERVATIONS_FILE, new TypeReference<List<Reservation>>() {});
+        if (readReservations == null) {
+            this.reservations = new ArrayList<>();
+        } else {
+            this.reservations = new ArrayList<>(readReservations);
         }
     }
 }

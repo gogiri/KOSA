@@ -9,19 +9,28 @@ import com.msa2024.user.service.UserService;
 import java.util.Scanner;
 
 public class AdminController {
-    private boolean exitRequested = false;
+    private boolean exitRequested = false; // 프로그램 종료 요청 여부를 나타내는 변수
     private AdminManager adminManager;
     private AdminService adminService;
+
 
     public AdminController(UserManager userManager, UserService userService) {
         this.adminManager = new AdminManager(userManager);
         this.adminService = new AdminServiceImpl(adminManager, userService);
     }
 
+    /**
+     * 관리자 메뉴를 실행합니다.
+     * @param sc Scanner 인스턴스
+     */
     public void run() {
         adminView(new Scanner(System.in));
     }
 
+    /**
+     * 관리자 메뉴를 보여주고 사용자 입력에 따라 적절한 작업을 수행합니다.
+     * @param sc Scanner 인스턴스
+     */
     public void adminView(Scanner sc) {
         boolean adminLoop = true;
         while (adminLoop) {
@@ -78,10 +87,18 @@ public class AdminController {
         }
     }
 
+    /**
+     * 프로그램 종료 요청 여부를 반환합니다.
+     * @return 종료 요청 여부
+     */
     public boolean isExitRequested() {
         return exitRequested;
     }
 
+    /**
+     * 로그아웃을 처리합니다.
+     * 프로그램 종료 요청을 설정합니다.
+     */
     private void logout() {
         exitRequested = true;
         System.out.println("로그아웃 되었습니다.");

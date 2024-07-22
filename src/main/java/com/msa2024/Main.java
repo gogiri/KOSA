@@ -15,8 +15,8 @@ import com.msa2024.user.service.UserServiceImpl;
 
 public class Main {
     private static UserController userController = new UserController();
-    private static ReservationController reservationController = new ReservationController();
     private static UserService userService = new UserServiceImpl("src/main/java/resources/");
+    private static ReservationController reservationController = new ReservationController("src/main/java/resources/");
     private static ClubController clubController;
     private static AdminController adminController;
     private static AdminManager adminManager = new AdminManager(UserController.getUserManager());
