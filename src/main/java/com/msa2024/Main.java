@@ -1,8 +1,10 @@
 package com.msa2024;
 
+import java.util.List;
 import java.util.Scanner;
 
 import com.msa2024.admin.controller.AdminController;
+import com.msa2024.admin.entity.AdminManager;
 import com.msa2024.club.controller.ClubController;
 import com.msa2024.reservation.controller.ReservationController;
 import com.msa2024.user.controller.UserController;
@@ -17,6 +19,7 @@ public class Main {
     private static UserService userService = new UserServiceImpl("src/main/java/resources/");
     private static ClubController clubController;
     private static AdminController adminController;
+    private static AdminManager adminManager = new AdminManager(UserController.getUserManager());
     private static User loggedInUser = null; // 로그인된 사용자 정보를 저장할 변수
     private static ProgramState state = ProgramState.MAIN_MENU;  // 프로그램 상태 변수
 
@@ -38,7 +41,24 @@ public class Main {
         System.out.print("=======================================================\n");
         System.out.print("=======================================================\n");
 
+        // 공지사항 출력
+        showAnnouncements();
+
         runProgram();
+    }
+
+    private static void showAnnouncements() {
+        List<String> announcements = adminManager.getAnnouncements();
+        if (announcements.isEmpty()) {
+            System.out.println("==== [공지사항] ====");
+            System.out.println("현재 공지사항이 없습니다.");
+        } else {
+            System.out.println("==== [공지사항] ====");
+            for (String announcement : announcements) {
+                System.out.println("- " + announcement);
+            }
+        }
+        System.out.print("=======================================================\n");
     }
 
     private static void runProgram() {

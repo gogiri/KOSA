@@ -29,9 +29,11 @@ public class AdminManager {
             e.printStackTrace();
         }
 
-        this.announcements = announcementFileUtil.readFromFileWithJackson(ANNOUNCEMENTS_FILE, new TypeReference<List<String>>() {});
-        if (this.announcements == null) {
+        List<String> readAnnouncements = announcementFileUtil.readFromFileWithJackson(ANNOUNCEMENTS_FILE, new TypeReference<List<String>>() {});
+        if (readAnnouncements == null) {
             this.announcements = new ArrayList<>();
+        } else {
+            this.announcements = new ArrayList<>(readAnnouncements);
         }
     }
 
