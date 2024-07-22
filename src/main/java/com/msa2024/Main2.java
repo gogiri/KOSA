@@ -12,7 +12,7 @@ import com.msa2024.user.service.UserService;
 import com.msa2024.user.service.UserServiceImpl;
 
 public class Main2 {
-    private static AdminController adminController = new AdminController();
+    //private static AdminController adminController = new AdminController();
     private static UserController2 userController = new UserController2();
     private static ReservationController reservationController = new ReservationController();
     private static UserService userService = new UserServiceImpl("src/main/java/resources/students.json");

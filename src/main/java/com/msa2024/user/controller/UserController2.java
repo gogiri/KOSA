@@ -12,7 +12,7 @@ public class UserController2 {
 
     private static UserManager userManager;
     private static User loggedInUser;
-    private static ClubController clubController = new ClubController();
+    //private static ClubController clubController = new ClubController();
     public UserController2() {
         UserServiceImpl service = new UserServiceImpl("students.json");
         userManager = new UserManager(service);
@@ -87,7 +87,7 @@ public class UserController2 {
                     break;
                 case "2":
                     //ClubController clubController = new ClubController();
-                    clubController.run();
+                    //clubController.run();
 
                     break;
                 case "3":
