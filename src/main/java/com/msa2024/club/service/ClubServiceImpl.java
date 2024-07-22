@@ -25,7 +25,7 @@ public class ClubServiceImpl implements ClubService {
 
 	}
 
-	static final String CLUBFILEPATH = "src/main/java/resources/club.json";
+	static final String CLUBFILEPATH = "src/main/resources/club.json";
 
 	
 	// 1. 전체 출력 (Club JSON 파일을 로드하고 출력하는 함수)

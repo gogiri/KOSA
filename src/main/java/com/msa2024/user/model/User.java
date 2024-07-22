@@ -17,6 +17,7 @@ public class User {
   private LocalDate blockDate; //시간이 지남에 따라 로그인 차단.
   private List<AttendanceRecord> attendanceRecords; //출퇴근 시간 기록.
   private int warningCount; //누적 경고 수
+  private boolean blocked; //누적 경고 수
 
   public User() {
     // 기본 생성자
@@ -31,7 +32,8 @@ public class User {
           @JsonProperty("role") Role role,
           @JsonProperty("blockDate") LocalDate blockDate,
           @JsonProperty("attendanceRecords") List<AttendanceRecord> attendanceRecords,
-          @JsonProperty("warningCount") int warningCount
+          @JsonProperty("warningCount") int warningCount,
+          @JsonProperty("blocked") boolean blocked
   ) {
     this.email = email;
     this.phone_number = phone_number;
@@ -41,6 +43,7 @@ public class User {
     this.blockDate = blockDate;
     this.attendanceRecords = attendanceRecords != null ? attendanceRecords : new ArrayList<>();
     this.warningCount = warningCount;
+    this.blocked = blocked;
   }
 
   public User(String email, String name, String phone_number, String password, Role role, LocalDate blockDate) {
@@ -52,6 +55,11 @@ public class User {
     this.blockDate = blockDate;
     this.attendanceRecords = new ArrayList<AttendanceRecord>();
     this.warningCount = 0;  // 누적경고 수 초기화
+    this.blocked = false;
+  }
+
+  public void setBlocked(boolean blocked) {
+    this.blocked = blocked;
   }
 
   public String getEmail() {
@@ -136,8 +144,11 @@ public class User {
   @Override
   public String toString() {
     return "User [email=" + email + ", phone_number=" + phone_number + ", name=" + name
-            + ", password=" + password + ", role=" + role + ", blockDate=" + (blockDate != null ? blockDate.toString() : "N/A")
-            + ", attendanceRecords=" + attendanceRecords.toString() + ", warningCount=" + warningCount + "]";
+        + ", password=" + password + ", role=" + role + ", blockDate=" + blockDate
+        + ", attendanceRecords=" + attendanceRecords + ", warningCount=" + warningCount
+        + ", blocked=" + blocked + "]";
   }
+
+  
 
 }
