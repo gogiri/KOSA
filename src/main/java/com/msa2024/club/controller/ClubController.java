@@ -15,13 +15,13 @@ public class ClubController {
 	public void run() {
 		Scanner sc = new Scanner(System.in);
 		while (true) {
-			System.out.println("\n===== 소모임 =====");
+			System.out.println("\n===== 모임 =====");
 			System.out.println("[메뉴 선택]");
 			System.out.println("1. 전체 출력");
 			System.out.println("2. 등록");
 			System.out.println("3. 삭제");
 			System.out.println("4. 참가");
-			System.out.println("5. 참여 소모임 정보");
+			System.out.println("5. 참여 모임 정보");
 			System.out.println("9. 종료");
 			System.out.println("메뉴를 선택하세요=>");
 			
