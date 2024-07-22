@@ -14,7 +14,7 @@ import com.msa2024.user.service.UserServiceImpl;
 public class Main {
     private static UserController userController = new UserController();
     private static ReservationController reservationController = new ReservationController();
-    private static UserService userService = new UserServiceImpl("src/main/java/resources/students.json");
+    private static UserService userService = new UserServiceImpl("src/main/java/resources/");
     private static ClubController clubController;
     private static AdminController adminController;
     private static User loggedInUser = null; // 로그인된 사용자 정보를 저장할 변수

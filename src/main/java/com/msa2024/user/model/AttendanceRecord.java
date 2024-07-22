@@ -1,48 +1,43 @@
 package com.msa2024.user.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class AttendanceRecord {
-  /**
-   * 출퇴근 시간 기록을 위한 필드
-   */
-  private final static DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy.MM.dd a HH:mm:ss");
 
-  @JsonProperty("loginTime")
-  private LocalDateTime loginTime; // 로그인 시간
-
-  @JsonProperty("logoutTime")
-  private LocalDateTime logoutTime; // 로그아웃 시간
-
-  @JsonProperty("isLate")
-  private boolean isLate; // 지각 유무
-
-  @JsonProperty("isEarlyLeave")
-  private boolean isEarlyLeave; // 기타 사유
-
-  private String formatterLoginTime;
-  private String formatterLogoutTime;
-
-  public AttendanceRecord() {
-    // 기본 생성자
-  }
+  private LocalDateTime loginTime;
+  private LocalDateTime logoutTime;
+  private boolean earlyLeave;
+  private boolean late;
 
   @JsonCreator
-  public AttendanceRecord(@JsonProperty("loginTime") LocalDateTime loginTime) {
+  public AttendanceRecord(
+          @JsonProperty("loginTime") LocalDateTime loginTime,
+          @JsonProperty("logoutTime") LocalDateTime logoutTime,
+          @JsonProperty("earlyLeave") boolean earlyLeave,
+          @JsonProperty("late") boolean late
+  ) {
     this.loginTime = loginTime;
-    this.formatterLoginTime = loginTime.format(dtf);
-    // 9시 이후 지각
-    this.isLate = loginTime.toLocalTime().isAfter(LocalTime.of(9, 0));
+    this.logoutTime = logoutTime;
+    this.earlyLeave = earlyLeave;
+    this.late = late;
+  }
+
+  public AttendanceRecord(LocalDateTime loginTime) {
+    this.loginTime = loginTime;
+  }
+
+  public LocalDateTime getLoginTime() {
+    return loginTime;
   }
 
   public void setLoginTime(LocalDateTime loginTime) {
     this.loginTime = loginTime;
-    this.formatterLoginTime = loginTime.format(dtf);
   }
 
   public LocalDateTime getLogoutTime() {
@@ -51,46 +46,42 @@ public class AttendanceRecord {
 
   public void setLogoutTime(LocalDateTime logoutTime) {
     this.logoutTime = logoutTime;
-    this.formatterLogoutTime = logoutTime.format(dtf);
-    // 19시 이전에는 기타사유
-    this.isEarlyLeave = logoutTime.toLocalTime().isBefore(LocalTime.of(19, 0));
-  }
-
-  public boolean isLate() {
-    return isLate;
-  }
-
-  public void setLate(boolean isLate) {
-    this.isLate = isLate;
   }
 
   public boolean isEarlyLeave() {
-    return isEarlyLeave;
+    return earlyLeave;
   }
 
-  public void setEarlyLeave(boolean isEarlyLeave) {
-    this.isEarlyLeave = isEarlyLeave;
+  public void setEarlyLeave(boolean earlyLeave) {
+    this.earlyLeave = earlyLeave;
+  }
+
+  public boolean isLate() {
+    return late;
+  }
+
+  public void setLate(boolean late) {
+    this.late = late;
   }
 
   public String getFormatterLoginTime() {
-    return formatterLoginTime;
-  }
-
-  public void setFormatterLoginTime(String formatterLoginTime) {
-    this.formatterLoginTime = formatterLoginTime;
+    return loginTime.format(DateTimeFormatter.ofPattern("yyyy.MM.dd a HH:mm:ss"));
   }
 
   public String getFormatterLogoutTime() {
-    return formatterLogoutTime;
-  }
-
-  public void setFormatterLogoutTime(String formatterLogoutTime) {
-    this.formatterLogoutTime = formatterLogoutTime;
+    if (logoutTime == null) {
+      return null;
+    }
+    return logoutTime.format(DateTimeFormatter.ofPattern("yyyy.MM.dd a HH:mm:ss"));
   }
 
   @Override
   public String toString() {
-    return "AttendanceRecord [loginTime=" + getFormatterLoginTime() + ", logoutTime=" + getFormatterLogoutTime() + ", isLate="
-            + isLate + ", isEarlyLeave=" + isEarlyLeave + "]";
+    return "AttendanceRecord{" +
+            "loginTime=" + loginTime +
+            ", logoutTime=" + logoutTime +
+            ", earlyLeave=" + earlyLeave +
+            ", late=" + late +
+            '}';
   }
 }

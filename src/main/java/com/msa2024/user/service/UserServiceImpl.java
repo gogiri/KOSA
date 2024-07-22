@@ -16,10 +16,11 @@ public class UserServiceImpl implements UserService {
   private Map<String, User> users = new HashMap<>();
   private Map<String, AttendanceRecord> currentSessions = new HashMap<>();
   private GenericFileUtil<User> fileUtil;
+  private static final String USERS_FILE = "students.json";
 
-  public UserServiceImpl(String filePath) {
-    this.fileUtil = new GenericFileUtil<>("src/main/java/resources/students.json");
-    loadUsersSignUpFile(filePath);
+  public UserServiceImpl(String basePath) {
+    this.fileUtil = new GenericFileUtil<>(basePath);
+    loadUsersSignUpFile(USERS_FILE);
   }
 
   @Override
@@ -79,7 +80,7 @@ public class UserServiceImpl implements UserService {
 
   private void saveUsers() {
     List<User> userList = new ArrayList<>(users.values());
-    fileUtil.writeToFileWithJackson("users.json", userList);
+    fileUtil.writeToFileWithJackson(USERS_FILE, userList);
   }
 
   @Override
@@ -107,6 +108,7 @@ public class UserServiceImpl implements UserService {
       AttendanceRecord record = new AttendanceRecord(LocalDateTime.now());
       user.addAttendanceRecord(record);
       currentSessions.put(email, record);
+      saveUsers(); // Save after login
       return user;
     } else {
       System.out.println("비밀번호가 일치하지 않습니다.");
@@ -120,9 +122,10 @@ public class UserServiceImpl implements UserService {
       AttendanceRecord record = currentSessions.remove(email);
       record.setLogoutTime(LocalDateTime.now());
       System.out.println("Logout successful.");
+      saveUsers(); // Save after logout
 
       if (record.isEarlyLeave()) {
-        System.out.println(record.getFormatterLogoutTime() + "기타사유로 인한 조퇴");
+        System.out.println(record.getFormatterLogoutTime() + " 기타사유로 인한 조퇴");
       }
     } else {
       System.out.println("No active session found for the user.");
@@ -135,6 +138,7 @@ public class UserServiceImpl implements UserService {
     if (user != null) {
       user.addWarning();
       System.out.println("User " + email + " reported. Warning count: " + user.getWarningCount());
+      saveUsers(); // Save after reporting
     } else {
       System.out.println("User not found.");
     }

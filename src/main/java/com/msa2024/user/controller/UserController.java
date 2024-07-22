@@ -13,7 +13,7 @@ public class UserController {
     private static User loggedInUser;
     //private static ClubController clubController = new ClubController();
     public UserController() {
-        UserServiceImpl service = new UserServiceImpl("src/main/java/resources/students.json");
+        UserServiceImpl service = new UserServiceImpl("src/main/java/resources/");
         userManager = new UserManager(service);
         System.out.println(userManager.toString());
     }
