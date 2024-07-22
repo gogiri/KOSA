@@ -38,11 +38,9 @@ public class AdminController {
 
             switch (adminMenu) {
                 case "1":
-                    System.out.println("모든 회원 출력 선택됨");  // 디버깅 메시지
                     adminService.listAllUsers();
                     break;
                 case "2":
-                    System.out.println("사용자 차단 선택됨");  // 디버깅 메시지
                     System.out.print("차단할 사용자 이메일: ");
                     String blockEmail = sc.nextLine();
                     System.out.print("차단할 시간(시간 단위): ");
@@ -51,11 +49,9 @@ public class AdminController {
                     adminService.blockUser(blockEmail, hours);
                     break;
                 case "3":
-                    System.out.println("차단된 사용자 확인 선택됨");  // 디버깅 메시지
                     adminService.checkForBlockedUsers();
                     break;
                 case "4":
-                    System.out.println("회원정보 수정 선택됨");  // 디버깅 메시지
                     System.out.print("수정할 사용자 이메일: ");
                     String updateEmail = sc.nextLine();
                     System.out.print("새 이름(공백으로 유지): ");
@@ -65,40 +61,32 @@ public class AdminController {
                     adminService.updateUser(updateEmail, newName, newPassword);
                     break;
                 case "5":
-                    System.out.println("블랙리스트 출력 선택됨");  // 디버깅 메시지
                     adminService.listBlacklistedUsers();
                     break;
                 case "6":
-                    System.out.println("공지사항 추가 선택됨");  // 디버깅 메시지
                     System.out.print("추가할 공지사항: ");
                     String announcement = sc.nextLine();
                     adminService.addAnnouncement(announcement);
                     break;
                 case "7":
-                    System.out.println("공지사항 목록 보기 선택됨");  // 디버깅 메시지
                     adminService.listAnnouncements();
                     break;
                 case "8":
-                    System.out.println("사용자 활동 로그 보기 선택됨");  // 디버깅 메시지
                     adminService.listActivityLogs();
                     break;
                 case "9":
-                    System.out.println("사용자 차단 해제 선택됨");  // 디버깅 메시지
                     System.out.print("차단 해제할 사용자 이메일: ");
                     String unblockEmail = sc.nextLine();
                     adminService.unblockUser(unblockEmail);
                     break;
                 case "10":
-                    System.out.println("노쇼 확인 및 차단 선택됨");  // 디버깅 메시지
                     adminService.checkNoShows();
                     break;
                 case "11":
-                    System.out.println("로그아웃 선택됨");  // 디버깅 메시지
                     logout();
                     adminLoop = false;
                     break;
                 case "12":
-                    System.out.println("뒤로가기 선택됨");  // 디버깅 메시지
                     adminLoop = false;
                     break;
                 default:
