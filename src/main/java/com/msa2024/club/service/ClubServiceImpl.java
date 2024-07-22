@@ -25,7 +25,7 @@ public class ClubServiceImpl implements ClubService {
 
 	}
 
-	static final String CLUBFILEPATH = "src/main/resources/club.json";
+	static final String CLUBFILEPATH = "src/main/java/resources/club.json";
 
 	
 	// 1. 전체 출력 (Club JSON 파일을 로드하고 출력하는 함수)
@@ -134,7 +134,6 @@ public class ClubServiceImpl implements ClubService {
 			e.printStackTrace();
 			System.out.println("파일을 읽거나 쓰는 중 오류가 발생했습니다.");
 		}
-		sc.close();
 	}
 
 	// 3. 삭제
@@ -175,7 +174,6 @@ public class ClubServiceImpl implements ClubService {
 			System.err.println("파일 처리 중 오류 발생: " + e.getMessage());
 			e.printStackTrace();
 		}
-		sc.close();
 	}
 
 	//4. 참가
@@ -252,7 +250,6 @@ public class ClubServiceImpl implements ClubService {
 			e.printStackTrace();
 			System.out.println("파일을 읽거나 쓰는 중 오류가 발생했습니다.");
 		} finally {
-			sc.close();
 		}
 	}
 
