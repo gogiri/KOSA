@@ -8,7 +8,9 @@ public class ReservationController {
   private boolean exitRequested = false;
     public void run() {
         
-        String filePath = "C:\\Edu\\WS-KSJ\\KOSAproject\\src\\test\\resources\\reservations.json";
+
+        String filePath = "src/main/resources/reservations.json";
+
         ReservationService controller = new ReservationService(filePath);
         Scanner sc = new Scanner(System.in);
 

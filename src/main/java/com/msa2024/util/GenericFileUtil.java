@@ -42,7 +42,9 @@ public class GenericFileUtil<T> {
     public void writeToFileWithJackson(String filename, List<T> items) {
         try {
             objectMapper.writeValue(new File(basePath + filename), items);
+            System.out.println("파일 쓰기 성공: " + items);
         } catch (IOException e) {
+          System.out.println("파일 쓰기 오류: " + e.getMessage());
             e.printStackTrace();
         }
     }

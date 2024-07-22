@@ -18,14 +18,16 @@ public class UserServiceImpl implements UserService {
   private GenericFileUtil<User> fileUtil;
 
   public UserServiceImpl(String filePath) {
-    this.fileUtil = new GenericFileUtil<>("src/main/java/resources/");
+    this.fileUtil = new GenericFileUtil<>("src/main/java/resources/students.json");
     loadUsersSignUpFile(filePath);
   }
 
   @Override
   public void loadUsersSignUpFile(String filePath) {
     try {
+      System.out.println("파일 경로: " + filePath);
       List<User> userList = fileUtil.readFromFileWithJackson(filePath, new TypeReference<List<User>>() {});
+      System.out.println("사용자 목록: " + userList); // 디버깅 출력 추가
       if (userList != null) {
         for (User user : userList) {
           users.put(user.getEmail(), user);
