@@ -97,6 +97,7 @@ public class Main {
         System.out.println("[1] 로그인/회원가입");
         System.out.println("[2] 유저 메뉴");
         System.out.println("[3] 관리자 메뉴");
+        System.out.println("[4] 블랙리스트 확인");
         System.out.println("[5] 종료");
         System.out.print("메뉴를 선택하세요 => ");
 
@@ -124,6 +125,9 @@ public class Main {
                     } else {
                         System.out.println("\n관리자만 이용 가능합니다.");
                     }
+                    break;
+                case "4":
+                    adminManager.listBlacklistedUsers();
                     break;
                 case "5":
                     System.out.println("\n[종료]");

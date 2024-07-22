@@ -72,18 +72,10 @@ public class AdminServiceImpl implements AdminService {
         adminManager.listAnnouncements();
     }
 
-    @Override
-    public void listActivityLogs() {
-        adminManager.listActivityLogs();
-    }
 
     @Override
     public void unblockUser(String email) {
         adminManager.unblockUser(email);
     }
 
-    @Override
-    public void checkNoShows() {
-        adminManager.checkNoShows();
-    }
 }

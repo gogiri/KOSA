@@ -37,7 +37,9 @@ public class AdminManager {
         }
     }
 
-    // 이메일로 사용자 검색 메서드 추가
+    /**
+     * 이메일을 통해 사용자 검색
+     */
     private User getUserByEmail(String email) {
         for (User user : userManager.listUsers()) {
             if (user.getEmail().equals(email)) {
@@ -47,22 +49,29 @@ public class AdminManager {
         return null;
     }
 
-    // 사용자 정보 저장 메서드 추가
+    /**
+     * 사용자 정보를 파일에 저장
+     */
     private void saveUsers() {
-        // 사용자 정보를 파일이나 데이터베이스에 저장하는 로직을 구현합니다.
-        // 여기서는 GenericFileUtil을 사용하여 파일에 저장하는 예시를 제공합니다.
         userFileUtil.writeToFileWithJackson("students.json", userManager.listUsers());
     }
 
+    /**
+     * 모든 사용자 목록 반환
+     */
     public List<User> listAllUsers() {
         return userManager.listUsers();
     }
 
+    /**
+     * 사용자를 차단
+     */
     public void blockUser(String email, int hours) {
         User user = getUserByEmail(email);
         if (user != null) {
             LocalDateTime blockedUntilDateTime = LocalDateTime.now().plusHours(hours);
             user.setBlockDate(blockedUntilDateTime.toLocalDate());
+            user.setBlocked(true); // 사용자 차단 상태 설정
             user.addWarning();
             saveUsers();
             System.out.println("사용자 " + email + "이 " + blockedUntilDateTime + "까지 차단되었습니다.");
@@ -71,10 +80,14 @@ public class AdminManager {
         }
     }
 
+    /**
+     * 사용자 차단 해제
+     */
     public void unblockUser(String email) {
         User user = getUserByEmail(email);
         if (user != null) {
             user.setBlockDate(null);
+            user.setBlocked(false); // 사용자 차단 해제
             saveUsers();
             System.out.println("사용자 " + email + "의 차단이 해제되었습니다.");
         } else {
@@ -82,24 +95,36 @@ public class AdminManager {
         }
     }
 
+    /**
+     * 차단된 사용자들을 확인하고 차단 해제
+     */
     public void checkForBlockedUsers() {
         for (User user : userManager.listUsers()) {
             if (user.isBlocked()) {
                 user.setBlockDate(null);
+                user.setBlocked(false); // 사용자 차단 해제
                 saveUsers();
                 System.out.println("사용자 " + user.getEmail() + "의 차단이 자동으로 해제되었습니다.");
             }
         }
     }
 
-    public void checkNoShows() {
-        for (User user : userManager.listUsers()) {
-            if (user.getWarningCount() >= 3) {
-                blockUser(user.getEmail(), 72);
-            }
-        }
-    }
+    /**
+     * 노쇼 사용자 확인 및 차단(추후 기능 추가)
+     *
+     *    public void checkNoShows() {
+     *         for (User user : userManager.listUsers()) {
+     *             if (user.getWarningCount() >= 3) {
+     *                 blockUser(user.getEmail(), 72);
+     *             }
+     *         }
+     *     }
+     */
 
+
+    /**
+     * 사용자 정보 업데이트
+     */
     public void updateUser(String email, String newName, String newPassword) {
         User user = getUserByEmail(email);
         if (user != null) {
@@ -112,20 +137,36 @@ public class AdminManager {
         }
     }
 
+    /**
+     * 차단된 사용자 목록 출력
+     */
     public void listBlacklistedUsers() {
+        System.out.println("==== [블랙리스트] ====");
+        boolean hasBlacklistedUsers = false;
         for (User user : userManager.listUsers()) {
             if (user.isBlocked()) {
+                hasBlacklistedUsers = true;
                 System.out.println("이메일: " + user.getEmail() + ", 이름: " + user.getName() + ", 차단된 시간: " + user.getBlockDate() + ", 누적 경고 수: " + user.getWarningCount());
             }
         }
+        if (!hasBlacklistedUsers) {
+            System.out.println("현재 차단된 사용자가 없습니다.");
+        }
+        System.out.print("=======================================================\n");
     }
 
+    /**
+     * 공지사항 추가
+     */
     public void addAnnouncement(String announcement) {
         announcements.add(announcement);
         announcementFileUtil.writeToFileWithJackson(ANNOUNCEMENTS_FILE, announcements);
         System.out.println("공지사항이 추가되었습니다.");
     }
 
+    /**
+     * 공지사항 목록 출력
+     */
     public void listAnnouncements() {
         System.out.println("공지사항 목록:");
         for (String announcement : announcements) {
@@ -133,21 +174,20 @@ public class AdminManager {
         }
     }
 
-    public void logActivity(String activity) {
-        activityLogs.add(activity);
-    }
 
-    public void listActivityLogs() {
-        System.out.println("사용자 활동 로그:");
-        for (String log : activityLogs) {
-            System.out.println("- " + log);
-        }
-    }
 
+
+
+    /**
+     * 공지사항 반환
+     */
     public List<String> getAnnouncements() {
         return announcements;
     }
 
+    /**
+     * 공지사항 설정
+     */
     public void setAnnouncements(List<String> announcements) {
         this.announcements = announcements;
     }

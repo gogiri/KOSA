@@ -8,7 +8,6 @@ public interface AdminService {
     void listBlacklistedUsers();
     void addAnnouncement(String announcement);
     void listAnnouncements();
-    void listActivityLogs();
     void unblockUser(String email);
-    void checkNoShows();
+
 }

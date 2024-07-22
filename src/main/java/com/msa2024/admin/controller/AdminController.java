@@ -13,12 +13,10 @@ public class AdminController {
     private AdminManager adminManager;
     private AdminService adminService;
 
-
     public AdminController(UserManager userManager, UserService userService) {
         this.adminManager = new AdminManager(userManager);
         this.adminService = new AdminServiceImpl(adminManager, userService);
     }
-
 
     public void run() {
         adminView(new Scanner(System.in));
@@ -29,16 +27,15 @@ public class AdminController {
         while (adminLoop) {
             System.out.println("\n[INFO] 관리자님 환영합니다!\n"
                     + "메뉴를 선택해주세요!!\n"
-                    + "[1] 모든 회원 출력\t[2] 사용자 차단\t[3] 차단된 사용자 확인\t[4] 회원정보 수정\t"
-                    + "[5] 블랙리스트 출력\t[6] 공지사항 추가\t[7] 공지사항 목록 보기\t"
-                    + "[8] 사용자 활동 로그 보기\t[9] 사용자 차단 해제\t[10] 노쇼 확인 및 차단\t[11] 로그아웃\t[12] 뒤로가기");
+                    + "[1] 모든 회원 출력\t[2] 사용자 차단\t[3] 사용자 차단 해제\t"
+                    + "[4] 회원정보 수정\t[5] 공지사항 추가\t[6] 공지사항 목록 보기\t[7] 종료");
             System.out.print("메뉴 => ");
             String adminMenu = sc.nextLine();
             System.out.println("선택된 메뉴: " + adminMenu);  // 선택된 메뉴 출력
 
             switch (adminMenu) {
                 case "1":
-                    adminService.listAllUsers();
+                    adminService.listAllUsers();  // 모든 회원 출력
                     break;
                 case "2":
                     System.out.print("차단할 사용자 이메일: ");
@@ -46,10 +43,12 @@ public class AdminController {
                     System.out.print("차단할 시간(시간 단위): ");
                     int hours = sc.nextInt();
                     sc.nextLine();  // 개행 문자 제거
-                    adminService.blockUser(blockEmail, hours);
+                    adminService.blockUser(blockEmail, hours);  // 사용자 차단
                     break;
                 case "3":
-                    adminService.checkForBlockedUsers();
+                    System.out.print("차단 해제할 사용자 이메일: ");
+                    String unblockEmail = sc.nextLine();
+                    adminService.unblockUser(unblockEmail);  // 사용자 차단 해제
                     break;
                 case "4":
                     System.out.print("수정할 사용자 이메일: ");
@@ -58,36 +57,19 @@ public class AdminController {
                     String newName = sc.nextLine();
                     System.out.print("새 비밀번호(공백으로 유지): ");
                     String newPassword = sc.nextLine();
-                    adminService.updateUser(updateEmail, newName, newPassword);
+                    adminService.updateUser(updateEmail, newName, newPassword);  // 회원정보 수정
                     break;
                 case "5":
-                    adminService.listBlacklistedUsers();
-                    break;
-                case "6":
                     System.out.print("추가할 공지사항: ");
                     String announcement = sc.nextLine();
-                    adminService.addAnnouncement(announcement);
+                    adminService.addAnnouncement(announcement);  // 공지사항 추가
+                    break;
+                case "6":
+                    adminService.listAnnouncements();  // 공지사항 목록 보기
                     break;
                 case "7":
-                    adminService.listAnnouncements();
-                    break;
-                case "8":
-                    adminService.listActivityLogs();
-                    break;
-                case "9":
-                    System.out.print("차단 해제할 사용자 이메일: ");
-                    String unblockEmail = sc.nextLine();
-                    adminService.unblockUser(unblockEmail);
-                    break;
-                case "10":
-                    adminService.checkNoShows();
-                    break;
-                case "11":
                     logout();
-                    adminLoop = false;
-                    break;
-                case "12":
-                    adminLoop = false;
+                    adminLoop = false;  // 종료
                     break;
                 default:
                     System.out.println("\n없는 메뉴입니다. 다시 선택하세요.");
