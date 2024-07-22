@@ -249,7 +249,7 @@ public class ClubServiceImpl implements ClubService {
 		}
 	}
 
-	// 5. 나의 소모임 출력
+	// 5. 나의 모임 출력
 	public void printMyClub(String userEmail) {
 	    ObjectMapper objectMapper = new ObjectMapper();
 	    try {

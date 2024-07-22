@@ -27,18 +27,20 @@ public class Club{
 	@JsonProperty("matchMaxSize")
 	private int matchMaxSize;		//5. 최대 인원
 
-	@JsonProperty("matchDate")
-	private String matchDate = DateUtil.getCurrentDateTime().substring(0, 10);		//6. 소모임 날짜
-
+	@JsonProperty("matchDate")		//6. 소모임 날짜(고정)
+	private String matchDate = DateUtil.getCurrentDateTime().substring(0, 10);
+	
 	@JsonProperty("matchTime")
 	private String matchTime;		//7. 소모임 시간
 
 	@JsonProperty("matchPlace")
 	private String matchPlace;		//8. 소모임 장소
 
-//	@JsonProperty("isDelivery")
+	@JsonProperty("isDelivery")
 	private String isDelivery;		//9. 배달 여부
 
+	
+	// Club 객체 추가
 	public Club(int clubNumber, String userEmail, String menuType, String matchName, int matchMaxSize, String matchTime, String matchPlace,
 			String isDelivery) {
 		this.email = userEmail;
@@ -53,7 +55,8 @@ public class Club{
 	public Club() {
 		
 	}
-
+	
+	//getter & setter
 	public int getClubNumber() {
 		return clubNumber;
 	}
