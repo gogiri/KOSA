@@ -6,8 +6,11 @@ import com.msa2024.club.service.ClubServiceImpl;
 import com.msa2024.user.model.User;
 
 public class ClubController {
-
+	User loggedInUser;
 	ClubServiceImpl cs = new ClubServiceImpl();
+	public ClubController(User loggedInUser) {
+		this.loggedInUser = loggedInUser;
+	}
 	private boolean exitRequested = false;
 	public void run() {
 		Scanner sc = new Scanner(System.in);
@@ -20,7 +23,8 @@ public class ClubController {
 			System.out.println("4. 참가");
 			System.out.println("5. 참여 소모임 정보");
 			System.out.println("9. 종료");
-			System.out.print("메뉴를 선택하세요=>");
+			System.out.println("메뉴를 선택하세요=>");
+			
 
 			String choice = sc.nextLine();
 
@@ -31,19 +35,19 @@ public class ClubController {
 					break;
 				case "2":
 					// 등록 로직
-					cs.makingClub("yoonchaemin@daum.net");
+					cs.makingClub(loggedInUser.getEmail());
 					break;
 				case "3":
 					// 삭제 로직
-					cs.deleteClub("yoonchaemin@daum.net");
+					cs.deleteClub(loggedInUser.getEmail());
 					break;
 				case "4":
 					// 참가 로직
-					cs.addClub("yoonchaemin@daum.net");
+					cs.addClub(loggedInUser.getEmail());
 					break;
 				case "5":
 					// 참여 소모임 정보
-					cs.printMyClub("yoonchaemin@daum.net");
+					cs.printMyClub(loggedInUser.getEmail());
 					break;
 				case "9":
 					System.out.println("\n[종료]");
