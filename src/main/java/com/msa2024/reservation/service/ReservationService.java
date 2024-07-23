@@ -21,6 +21,7 @@ public class ReservationService {
     private GenericFileUtil<Reservation> fileUtil;
     private static final String RESERVATIONS_FILE = "reservations.json";
 
+    // 생성자: 파일 경로를 받아서 초기화하고 예약 정보를 파일에서 로드
     public ReservationService(String basePath) {
         this.fileUtil = new GenericFileUtil<>(basePath);
         this.reservations = new ArrayList<>();
