@@ -31,6 +31,7 @@ public class UserServiceImpl implements UserService {
         for (User user : userList) {
           users.put(user.getEmail(), user);
         }
+        System.out.println("Users loaded successfully.");
       } else {
         System.out.println("User list is null.");
       }
@@ -70,19 +71,13 @@ public class UserServiceImpl implements UserService {
     LocalDate blockDate = LocalDate.now().plusMonths(6);
     User user = new User(email, name, phone_number, password, role, blockDate);
     users.put(email, user);
-    saveUsers();
+    saveBlockUsers();
     System.out.println("회원가입이 완료되었습니다!!. 해당 계정은 6개월 후에 잠길 예정입니다.");
     return true;
   }
 
-  private void saveUsers() {
-    List<User> userList = new ArrayList<>(users.values());
-    fileUtil.writeToFileWithJackson(USERS_FILE, userList);
-  }
-
   @Override
   public User login(String email, String password) {
-
     if (!users.containsKey(email)) {
       System.out.println("이메일 정보가 일치하지 않습니다.");
       return null;
@@ -104,7 +99,7 @@ public class UserServiceImpl implements UserService {
       AttendanceRecord record = new AttendanceRecord(LocalDateTime.now());
       user.addAttendanceRecord(record);
       currentSessions.put(email, record);
-      saveUsers(); // Save after login
+      saveBlockUsers(); // Save after login
       return user;
     } else {
       System.out.println("비밀번호가 일치하지 않습니다.");
@@ -118,7 +113,7 @@ public class UserServiceImpl implements UserService {
       AttendanceRecord record = currentSessions.remove(email);
       record.setLogoutTime(LocalDateTime.now());
       System.out.println("Logout successful.");
-      saveUsers(); // Save after logout
+      saveBlockUsers(); // Save after logout
 
       if (record.isEarlyLeave()) {
         System.out.println(record.getFormatterLogoutTime() + " 기타사유로 인한 조퇴");
@@ -134,7 +129,7 @@ public class UserServiceImpl implements UserService {
     if (user != null) {
       user.addWarning();
       System.out.println("User " + email + " reported. Warning count: " + user.getWarningCount());
-      saveUsers(); // Save after reporting
+      saveBlockUsers(); // Save after reporting
     } else {
       System.out.println("User not found.");
     }
@@ -146,6 +141,11 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
+  public void saveUsers() {
+    // Intentionally left blank or you can throw UnsupportedOperationException
+  }
+
+  @Override
   public void showAdminFunction() {
     // 구현 생략
   }
@@ -153,5 +153,20 @@ public class UserServiceImpl implements UserService {
   @Override
   public void showUserFunction() {
     // 구현 생략
+  }
+
+  @Override
+  public void saveBlockUsers() {
+    List<User> userList = new ArrayList<>(users.values());
+    fileUtil.writeToFileWithJackson(USERS_FILE, userList);
+    System.out.println("saveBlockUsers called. Current user list:");
+    for (User user : userList) {
+      System.out.println(user);
+    }
+  }
+
+  public boolean isUserBlocked(String email) {
+    User user = users.get(email);
+    return user != null && user.isBlocked();
   }
 }

@@ -53,7 +53,7 @@ public class User {
     this.password = password;
     this.role = role;
     this.blockDate = blockDate;
-    this.attendanceRecords = new ArrayList<AttendanceRecord>();
+    this.attendanceRecords = new ArrayList<>();
     this.warningCount = 0;  // 누적경고 수 초기화
     this.blocked = false;
   }
@@ -127,7 +127,9 @@ public class User {
   }
 
   public boolean isBlocked() {
-    return blocked && (blockDate == null || LocalDate.now().isBefore(blockDate));
+    boolean result = blocked;
+    System.out.println("isBlocked() called for user " + email + ": " + result + " (blocked=" + blocked + ", blockDate=" + blockDate + ")");
+    return result;
   }
 
   public void addAttendanceRecord(AttendanceRecord record) {

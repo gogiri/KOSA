@@ -20,38 +20,32 @@ public class Main {
     private static ClubController clubController;
     private static AdminController adminController;
     private static AdminManager adminManager = new AdminManager(UserController.getUserManager());
-    private static User loggedInUser = null; // 로그인된 사용자 정보를 저장할 변수
-    private static ProgramState state = ProgramState.MAIN_MENU;  // 프로그램 상태 변수
+    private static User loggedInUser = null;
+    private static ProgramState state = ProgramState.MAIN_MENU;
 
-    private static Scanner sc = new Scanner(System.in); // 전역 Scanner 인스턴스
+    private static Scanner sc = new Scanner(System.in);
 
     public static void main(String[] args) {
-        try {
-            System.out.print("=======================================================\n");
-            System.out.print("=======================================================\n");
+        System.out.print("=======================================================\n");
+        System.out.print("=======================================================\n");
 
-            System.out.println("\n"
-                    + "####    ####   ########   ############    ######    \n"
-                    + "####   ####   ##########  ############   ########   \n"
-                    + "####  ####   ####    #### ####          ##########  \n"
-                    + "#########    ###      ### ############ ####    #### \n"
-                    + "#########    ###      ### ############ ############ \n"
-                    + "####  ####   ####    ####        ##### ############ \n"
-                    + "####   ####   ##########  ############ ####    #### \n"
-                    + "####    ####   ########   ############ ####    #### "
-                    + "                                                    "
-                    + "");
-            System.out.print("=======================================================\n");
-            System.out.print("=======================================================\n");
+        System.out.println("\n"
+                + "####    ####   ########   ############    ######    \n"
+                + "####   ####   ##########  ############   ########   \n"
+                + "####  ####   ####    #### ####          ##########  \n"
+                + "#########    ###      ### ############ ####    #### \n"
+                + "#########    ###      ### ############ ############ \n"
+                + "####  ####   ####    ####        ##### ############ \n"
+                + "####   ####   ##########  ############ ####    #### \n"
+                + "####    ####   ########   ############ ####    #### "
+                + "                                                    "
+                + "");
+        System.out.print("=======================================================\n");
+        System.out.print("=======================================================\n");
 
-            // 공지사항 출력
-            showAnnouncements();
+        showAnnouncements();
 
-            runProgram();
-        } finally {
-            sc.close();
-            System.out.println("프로그램이 종료되었습니다.");
-        }
+        runProgram();
     }
 
     private static void showAnnouncements() {
@@ -72,31 +66,33 @@ public class Main {
         while (state != ProgramState.EXIT) {
             switch (state) {
                 case MAIN_MENU:
-                    showMainMenu();
+                    showMainMenu(sc);
                     break;
                 case LOGIN_REGISTER:
-                    showLoginRegisterMenu();
+                    showLoginRegisterMenu(sc);
                     break;
                 case USER_MENU:
-                    showUserMenu();
+                    showUserMenu(sc);
                     break;
                 case ADMIN_MENU:
-                    showAdminMenu();
+                    showAdminMenu(sc);
                     break;
                 case RESERVATION_MENU:
-                    showReservationMenu();
+                    showReservationMenu(sc);
                     break;
                 case CLUB_MENU:
-                    showClubMenu();
+                    showClubMenu(sc);
                     break;
                 default:
                     state = ProgramState.EXIT;
                     break;
             }
         }
+        sc.close();
+        System.out.println("프로그램이 종료되었습니다.");
     }
 
-    private static void showMainMenu() {
+    private static void showMainMenu(Scanner sc) {
         System.out.println("\n[메인 메뉴]\n");
         System.out.println("[1] 로그인");
         System.out.println("[2] 유저 메뉴");
@@ -112,7 +108,7 @@ public class Main {
                     break;
                 case "2":
                     if (loggedInUser != null) {
-                        if (loggedInUser.isBlocked()) {
+                        if (userService.isUserBlocked(loggedInUser.getEmail())) {
                             System.out.println("\n이 사용자는 차단되었습니다. 메뉴를 이용할 수 없습니다.");
                         } else {
                             Role role = loggedInUser.getRole();
@@ -147,7 +143,7 @@ public class Main {
         }
     }
 
-    private static void showLoginRegisterMenu() {
+    private static void showLoginRegisterMenu(Scanner sc) {
         System.out.println("\n[로그인 메뉴]\n");
         System.out.println("[1] 로그인");
         System.out.println("[2] 뒤로가기\n");
@@ -159,15 +155,20 @@ public class Main {
                 case "1":
                     loggedInUser = UserController.login(sc);
                     if (loggedInUser != null) {
-                        Role role = loggedInUser.getRole();
-                        System.out.println("로그인한 사용자 역할: " + role);
-                        if (role == Role.USER || role == Role.STUDENT) {
-                            state = ProgramState.USER_MENU;
-                        } else if (role == Role.ADMIN) {
-                            adminController = new AdminController(UserController.getUserManager(), userService);
-                            state = ProgramState.ADMIN_MENU;
+                        if (userService.isUserBlocked(loggedInUser.getEmail())) {
+                            System.out.println("이 사용자는 차단되었습니다. 로그인할 수 없습니다.");
+                            loggedInUser = null;
                         } else {
-                            System.out.println("\n올바르지 않은 사용자 역할입니다.");
+                            Role role = loggedInUser.getRole();
+                            System.out.println("로그인한 사용자 역할: " + role);
+                            if (role == Role.USER || role == Role.STUDENT) {
+                                state = ProgramState.USER_MENU;
+                            } else if (role == Role.ADMIN) {
+                                adminController = new AdminController(UserController.getUserManager(), userService);
+                                state = ProgramState.ADMIN_MENU;
+                            } else {
+                                System.out.println("\n올바르지 않은 사용자 역할입니다.");
+                            }
                         }
                     }
                     break;
@@ -183,7 +184,7 @@ public class Main {
         }
     }
 
-    private static void showUserMenu() {
+    private static void showUserMenu(Scanner sc) {
         System.out.println("\n[INFO] 메뉴를 선택해주세요!!\n"
                 + "[1] 회의실 예약\t[2] 소모임 예약\t[3] 로그아웃");
         System.out.print("메뉴 => ");
@@ -212,12 +213,12 @@ public class Main {
         }
     }
 
-    private static void showAdminMenu() {
+    private static void showAdminMenu(Scanner sc) {
         if (loggedInUser != null && loggedInUser.getRole() == Role.ADMIN) {
             if (adminController == null) {
                 adminController = new AdminController(UserController.getUserManager(), userService);
             }
-            adminController.run(); // AdminController의 run 메서드를 호출
+            adminController.run(sc); // AdminController의 run 메서드를 호출
             state = ProgramState.MAIN_MENU; // adminView가 종료되면 메인 메뉴로 돌아감
         } else {
             System.out.println("관리자 권한이 없습니다.");
@@ -225,7 +226,7 @@ public class Main {
         }
     }
 
-    private static void showClubMenu() {
+    private static void showClubMenu(Scanner sc) {
         ClubController clubController = new ClubController(loggedInUser); // 로그인된 유저 정보를 ClubController에 전달
         clubController.run(sc);
         if (clubController.isExitRequested()) {
@@ -235,7 +236,7 @@ public class Main {
         }
     }
 
-    private static void showReservationMenu() {
+    private static void showReservationMenu(Scanner sc) {
         reservationController.run();
         if (reservationController.isExitRequested()) {
             state = ProgramState.USER_MENU;
