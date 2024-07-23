@@ -17,7 +17,7 @@ public class User {
   private LocalDate blockDate; //시간이 지남에 따라 로그인 차단.
   private List<AttendanceRecord> attendanceRecords; //출퇴근 시간 기록.
   private int warningCount; //누적 경고 수
-  private boolean blocked; //누적 경고 수
+  private boolean blocked; //차단 여부
 
   public User() {
     // 기본 생성자
@@ -127,10 +127,7 @@ public class User {
   }
 
   public boolean isBlocked() {
-    if(blockDate == null) {
-      return false;
-    }
-    return LocalDate.now().isAfter(blockDate);
+    return blocked && (blockDate == null || LocalDate.now().isBefore(blockDate));
   }
 
   public void addAttendanceRecord(AttendanceRecord record) {
@@ -144,11 +141,8 @@ public class User {
   @Override
   public String toString() {
     return "User [email=" + email + ", phone_number=" + phone_number + ", name=" + name
-        + ", password=" + password + ", role=" + role + ", blockDate=" + blockDate
-        + ", attendanceRecords=" + attendanceRecords + ", warningCount=" + warningCount
-        + ", blocked=" + blocked + "]";
+            + ", password=" + password + ", role=" + role + ", blockDate=" + blockDate
+            + ", attendanceRecords=" + attendanceRecords + ", warningCount=" + warningCount
+            + ", blocked=" + blocked + "]";
   }
-
-  
-
 }

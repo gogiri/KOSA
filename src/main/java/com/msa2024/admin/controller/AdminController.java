@@ -37,7 +37,7 @@ public class AdminController {
             System.out.println("\n[INFO] 관리자님 환영합니다!\n"
                     + "메뉴를 선택해주세요!!\n"
                     + "[1] 모든 회원 출력\t[2] 사용자 차단\t[3] 사용자 차단 해제\t"
-                    + "[4] 회원정보 수정\t[5] 공지사항 추가\t[6] 공지사항 목록 보기\t[7] 종료");
+                    + "[4] 회원정보 수정\t[5] 공지사항 추가\t[6] 공지사항 목록 보기\t[7] 로그아웃");
             System.out.print("메뉴 => ");
             String adminMenu = sc.nextLine();
             System.out.println("선택된 메뉴: " + adminMenu);  // 선택된 메뉴 출력

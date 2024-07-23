@@ -16,6 +16,7 @@ public class AdminManager {
     private GenericFileUtil<User> userFileUtil; // 사용자 파일 유틸리티
     private GenericFileUtil<String> announcementFileUtil; // 공지사항 파일 유틸리티
     private static final String ANNOUNCEMENTS_FILE = "announcements.json"; // 공지사항 파일 이름
+    private static final String USERS_FILE = "students.json"; // 사용자 파일 이름
 
     /**
      * AdminManager 생성자
@@ -29,6 +30,7 @@ public class AdminManager {
 
         try {
             this.announcementFileUtil.createFileIfNotExists(ANNOUNCEMENTS_FILE); // 파일이 없으면 생성
+            this.userFileUtil.createFileIfNotExists(USERS_FILE); // 사용자 파일이 없으면 생성
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -38,6 +40,12 @@ public class AdminManager {
             this.announcements = new ArrayList<>();
         } else {
             this.announcements = new ArrayList<>(readAnnouncements);
+        }
+
+        // 사용자 파일 로드
+        List<User> readUsers = userFileUtil.readFromFileWithJackson(USERS_FILE, new TypeReference<List<User>>() {});
+        if (readUsers != null) {
+            userManager.setUsers(readUsers);
         }
     }
 
@@ -59,7 +67,7 @@ public class AdminManager {
      * 사용자 정보를 파일에 저장
      */
     private void saveUsers() {
-        userFileUtil.writeToFileWithJackson("students.json", userManager.listUsers());
+        userFileUtil.writeToFileWithJackson(USERS_FILE, userManager.listUsers());
     }
 
     /**
@@ -82,7 +90,7 @@ public class AdminManager {
             user.setBlockDate(blockedUntilDateTime.toLocalDate());
             user.setBlocked(true); // 사용자 차단 상태 설정
             user.addWarning();
-            saveUsers();
+            saveUsers(); // 사용자 정보를 파일에 저장
             System.out.println("사용자 " + email + "이 " + blockedUntilDateTime + "까지 차단되었습니다.");
         } else {
             System.out.println("사용자를 찾을 수 없습니다.");
@@ -98,7 +106,7 @@ public class AdminManager {
         if (user != null) {
             user.setBlockDate(null);
             user.setBlocked(false); // 사용자 차단 해제
-            saveUsers();
+            saveUsers(); // 사용자 정보를 파일에 저장
             System.out.println("사용자 " + email + "의 차단이 해제되었습니다.");
         } else {
             System.out.println("사용자를 찾을 수 없습니다.");
@@ -110,10 +118,10 @@ public class AdminManager {
      */
     public void checkForBlockedUsers() {
         for (User user : userManager.listUsers()) {
-            if (user.isBlocked()) {
+            if (user.isBlocked() && user.getBlockDate().isBefore(LocalDateTime.now().toLocalDate())) {
                 user.setBlockDate(null);
                 user.setBlocked(false); // 사용자 차단 해제
-                saveUsers();
+                saveUsers(); // 사용자 정보를 파일에 저장
                 System.out.println("사용자 " + user.getEmail() + "의 차단이 자동으로 해제되었습니다.");
             }
         }
@@ -130,7 +138,7 @@ public class AdminManager {
         if (user != null) {
             if (newName != null && !newName.isEmpty()) user.setName(newName);
             if (newPassword != null && !newPassword.isEmpty()) user.setPassword(newPassword);
-            saveUsers();
+            saveUsers(); // 사용자 정보를 파일에 저장
             System.out.println("사용자 정보가 업데이트되었습니다.");
         } else {
             System.out.println("사용자를 찾을 수 없습니다.");
@@ -189,5 +197,15 @@ public class AdminManager {
      */
     public void setAnnouncements(List<String> announcements) {
         this.announcements = announcements;
+    }
+
+    /**
+     * 사용자가 차단되었는지 여부를 확인합니다.
+     * @param email 확인할 사용자의 이메일
+     * @return 차단 여부
+     */
+    public boolean isUserBlocked(String email) {
+        User user = getUserByEmail(email);
+        return user != null && user.isBlocked();
     }
 }

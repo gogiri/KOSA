@@ -1,20 +1,25 @@
 package com.msa2024.user.controller;
 
+import java.time.LocalDateTime;
 import java.util.Scanner;
 
+import com.msa2024.admin.entity.AdminManager;
 import com.msa2024.user.model.Role;
 import com.msa2024.user.model.User;
 import com.msa2024.user.model.UserManager;
 import com.msa2024.user.service.UserServiceImpl;
 
-public class UserController {
+public class
+UserController {
 
     private static UserManager userManager;
     private static User loggedInUser;
-    //private static ClubController clubController = new ClubController();
+    private static AdminManager adminManager; // AdminManager 인스턴스 추가
+
     public UserController() {
         UserServiceImpl service = new UserServiceImpl("src/main/java/resources/");
         userManager = new UserManager(service);
+        adminManager = new AdminManager(userManager); // AdminManager 초기화
         System.out.println(userManager.toString());
     }
 
@@ -33,13 +38,18 @@ public class UserController {
         String loginPassword = sc.nextLine();
         loggedInUser = userManager.loginUser(loginEmail, loginPassword);
         if (loggedInUser != null) {
-            System.out.println("[유저정보] : " + loggedInUser.toString());
-            System.out.println("\n[INFO] " + loggedInUser.getName() + "님 환영합니다!");
+            if (loggedInUser.isBlocked()) {
+                System.out.println("이 사용자는 차단되었습니다. 로그인할 수 없습니다.");
+                loggedInUser = null;
+            } else {
+                System.out.println("\n[INFO] " + loggedInUser.getName() + "님 환영합니다!");
+            }
         } else {
             System.out.println("로그인 실패! 이메일이나 비밀번호를 확인하세요.");
         }
         return loggedInUser;
     }
+
 
     public void register(Scanner sc) {
         System.out.print("이름: ");

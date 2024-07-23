@@ -26,13 +26,10 @@ public class UserServiceImpl implements UserService {
   @Override
   public void loadUsersSignUpFile(String filePath) {
     try {
-      System.out.println("파일 경로: " + filePath);
       List<User> userList = fileUtil.readFromFileWithJackson(filePath, new TypeReference<List<User>>() {});
-      System.out.println("사용자 목록: " + userList); // 디버깅 출력 추가
       if (userList != null) {
         for (User user : userList) {
           users.put(user.getEmail(), user);
-          System.out.println("[User] : " + user.toString());
         }
       } else {
         System.out.println("User list is null.");
@@ -85,7 +82,6 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public User login(String email, String password) {
-    System.out.println("로그인 시도 - 이메일: " + email + ", 비밀번호: " + password);
 
     if (!users.containsKey(email)) {
       System.out.println("이메일 정보가 일치하지 않습니다.");

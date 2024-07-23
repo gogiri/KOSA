@@ -5,7 +5,7 @@ import java.util.Scanner;
 import com.msa2024.user.service.UserService;
 
 public class UserManager {
-  
+    private List<User> users;
     private UserService userService;
 
     public UserManager(UserService userService) {
@@ -35,8 +35,12 @@ public class UserManager {
     public List<User> listUsers() {
         return userService.getUsers();
     }
+    public void setUsers(List<User> users) {
+        this.users = users;
+    }
+
 }
-  
+
   /*
   public void signUp() {
     Scanner sc = new Scanner(System.in);

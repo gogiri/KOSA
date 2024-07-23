@@ -93,12 +93,11 @@ public class Main {
     }
 
     private static void showMainMenu(Scanner sc) {
-        System.out.println("\n[메인 메뉴]");
-        System.out.println("[1] 로그인/회원가입");
+        System.out.println("\n[메인 메뉴]\n");
+        System.out.println("[1] 로그인");
         System.out.println("[2] 유저 메뉴");
         System.out.println("[3] 관리자 메뉴");
-        System.out.println("[4] 블랙리스트 확인");
-        System.out.println("[5] 종료");
+        System.out.println("[4] 종료\n");
         System.out.print("메뉴를 선택하세요 => ");
 
         if (sc.hasNextLine()) {
@@ -109,11 +108,15 @@ public class Main {
                     break;
                 case "2":
                     if (loggedInUser != null) {
-                        Role role = loggedInUser.getRole();
-                        if (role == Role.USER || role == Role.STUDENT) {
-                            state = ProgramState.USER_MENU;
+                        if (loggedInUser.isBlocked()) {
+                            System.out.println("\n이 사용자는 차단되었습니다. 메뉴를 이용할 수 없습니다.");
                         } else {
-                            System.out.println("\n올바르지 않은 사용자 역할입니다.");
+                            Role role = loggedInUser.getRole();
+                            if (role == Role.USER || role == Role.STUDENT) {
+                                state = ProgramState.USER_MENU;
+                            } else {
+                                System.out.println("\n올바르지 않은 사용자 역할입니다.");
+                            }
                         }
                     } else {
                         System.out.println("\n로그인 후 이용 가능합니다.");
@@ -127,9 +130,6 @@ public class Main {
                     }
                     break;
                 case "4":
-                    adminManager.listBlacklistedUsers();
-                    break;
-                case "5":
                     System.out.println("\n[종료]");
                     System.out.println("프로그램을 종료합니다.");
                     state = ProgramState.EXIT;
@@ -143,11 +143,11 @@ public class Main {
         }
     }
 
+
     private static void showLoginRegisterMenu(Scanner sc) {
-        System.out.println("\n[로그인/회원가입 메뉴]");
+        System.out.println("\n[로그인 메뉴]\n");
         System.out.println("[1] 로그인");
-        System.out.println("[2] 회원가입");
-        System.out.println("[3] 뒤로가기");
+        System.out.println("[2] 뒤로가기\n");
         System.out.print("메뉴를 선택하세요 => ");
 
         if (sc.hasNextLine()) {
@@ -169,9 +169,6 @@ public class Main {
                     }
                     break;
                 case "2":
-                    userController.register(sc);
-                    break;
-                case "3":
                     state = ProgramState.MAIN_MENU;
                     break;
                 default:

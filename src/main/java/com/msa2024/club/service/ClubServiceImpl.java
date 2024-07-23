@@ -199,11 +199,11 @@ public class ClubServiceImpl implements ClubService {
 				for (Club club : clubs) {
 					if (club.getClubNumber() == clubNumberToJoin) {
 						clubFound = true;
-						if (club.getEmail().equals(userEmail)) {
-							System.out.println("이미 모임에 참가한 이메일입니다. 참가를 취소합니다.");
-							return; // 메서드 종료
-						}
 						currentMemberCount++;
+					}
+					if (club.getEmail().equals(userEmail)) {
+						System.out.println("이미 모임에 참가한 이메일입니다. 참가를 취소합니다.");
+						return; // 메서드 종료
 					}
 				}
 
