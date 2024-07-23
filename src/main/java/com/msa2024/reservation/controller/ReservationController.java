@@ -23,8 +23,8 @@ public class ReservationController {
                 System.out.println("3.수정");
                 System.out.println("4.삭제");
                 System.out.println("5.나의 예약");
-                System.out.println("6.종료");
-                System.out.print("\n번호를 선택하세요=> ");
+                System.out.println("6.뒤로 가기");
+                System.out.println("\n번호를 선택하세요=> ");
                 String menu = sc.nextLine();
 
                 switch (menu) {

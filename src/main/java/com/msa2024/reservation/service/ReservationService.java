@@ -21,14 +21,16 @@ public class ReservationService {
     private GenericFileUtil<Reservation> fileUtil;
     private static final String RESERVATIONS_FILE = "reservations.json";
 
+    // 생성자: 파일 경로를 받아서 초기화하고 예약 정보를 파일에서 로드
     public ReservationService(String basePath) {
         this.fileUtil = new GenericFileUtil<>(basePath);
         this.reservations = new ArrayList<>();
         loadReservationsFromFile();
     }
 
+    // 새로운 예약을 추가하는 메서드
     public void addReservation(Scanner sc) {
-        System.out.println("일주일 단위로 예약이 가능합니다.");
+        System.out.println("\n일주일 단위로 예약이 가능합니다.");
         System.out.print("\n회의실 번호를 입력하세요(1~3): ");
         int roomSeq = sc.nextInt();
         sc.nextLine();
@@ -43,8 +45,11 @@ public class ReservationService {
 
         // 현재 날짜와 예약 날짜 비교
         LocalDate today = LocalDate.now();
+        // 날짜 포맷터를 지정 (yyyy-MM-dd 형식)
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        // 예약 날짜 문자열을 LocalDate 객체로 변환
         LocalDate reservationLocalDate = LocalDate.parse(reservationDate, formatter);
+        // 시간의 단위를 제공하여 시간의 양을 측정
         long daysBetween = ChronoUnit.DAYS.between(today, reservationLocalDate);
 
         if (daysBetween > 7 || daysBetween < 0) {
@@ -52,12 +57,32 @@ public class ReservationService {
             return;
         }
 
+        // 예약 중복 여부 확인
+        if (isReservationConflict(roomSeq, reservationDate, startTime)) {
+            System.out.println("\n해당 날짜와 시간에 이미 예약이 존재합니다.");
+            return;
+        }
+        
+        // 새로운 예약 객체 생성 및 추가
         Reservation reservation = new Reservation(roomSeq, email, telePhone, reservationDate, startTime);
         reservations.add(reservation);
         saveReservationsToFile();
-        System.out.println("예약이 추가되었습니다.");
+        System.out.println("\n예약이 추가되었습니다.");
     }
 
+        // 예약 중복 여부를 확인하는 메서드
+        private boolean isReservationConflict(int roomSeq, String reservationDate, String startTime) {
+        for (Reservation reservation : reservations) {
+            if (reservation.getRoomSeq() == roomSeq &&
+                reservation.getReservationDate().equals(reservationDate) &&
+                reservation.getStartTime().equals(startTime)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // 예약 목록을 출력하는 메서드
     public void viewReservations() {
         List<Reservation> reservationList = fileUtil.readFromFileWithJackson(RESERVATIONS_FILE, new TypeReference<List<Reservation>>() {});
 
@@ -82,6 +107,7 @@ public class ReservationService {
         System.out.println("----------------------------------------------------------");
     }
 
+    // 이메일로 예약을 필터링하는 메서드
     public List<Reservation> getReservationsByEmail(String email) {
         List<Reservation> filteredReservations = new ArrayList<>();
         for (Reservation reservation : reservations) {
@@ -92,12 +118,13 @@ public class ReservationService {
         return filteredReservations;
     }
 
+    // 기존 예약을 수정하는 메서드
     public void reReservation(Scanner sc) {
-        System.out.print("수정할 사람의 이메일을 입력하세요: ");
+        System.out.print("\n수정할 사람의 이메일을 입력하세요: ");
         String email = sc.nextLine();
         System.out.print("수정할 회의실 번호를 입력하세요(1~3): ");
         int roomSeq = sc.nextInt();
-        sc.nextLine(); // 개행 문자 소비
+        sc.nextLine();
 
         System.out.print("수정할 회의실 날짜를 입력하세요: ");
         String date = sc.nextLine();
@@ -106,12 +133,12 @@ public class ReservationService {
         for (Reservation reservation : reservations) {
             if (reservation.getEmail().equals(email) && reservation.getRoomSeq() == roomSeq
                     && reservation.getReservationDate().equals(date)) {
-                System.out.print("새 이메일을 입력하세요: ");
+                System.out.print("이메일을 입력하세요: ");
                 String newEmail = sc.nextLine();
                 System.out.print("새 회의실 번호를 입력하세요: ");
                 int newRoom = sc.nextInt();
-                sc.nextLine(); // 개행 문자 소비
-                System.out.print("새 전화번호를 입력하세요: ");
+                sc.nextLine();
+                System.out.print("전화번호를 입력하세요: ");
                 String newTelePhone = sc.nextLine();
                 System.out.print("새 예약 날짜를 입력하세요 (예: 2023-07-01): ");
                 String newDate = sc.nextLine();
@@ -134,8 +161,9 @@ public class ReservationService {
         }
     }
 
+    // 예약을 삭제하는 메서드
     public boolean deleteReservation(Scanner sc) {
-        System.out.print("삭제할 사람의 이메일을 입력해주세요: ");
+        System.out.print("\n삭제할 사람의 이메일을 입력해주세요: ");
         String email = sc.nextLine();
         System.out.print("예약된 날짜를 입력해주세요 (예: 2023-07-01): ");
         String date = sc.nextLine();
@@ -158,31 +186,32 @@ public class ReservationService {
                         case "1":
                             reservations.remove(reservation);
                             saveReservationsToFile();
-                            System.out.println("예약이 삭제되었습니다.");
+                            System.out.println("\n예약이 삭제되었습니다.");
                             whileLoop = false;
                             break;
                         case "2":
-                            System.out.println("예약을 삭제하지 않습니다.");
+                            System.out.println("\n예약을 삭제하지 않습니다.");
                             whileLoop = false;
                             break;
                         default:
-                            System.out.println("잘못된 입력입니다. 다시 선택해주세요.");
+                            System.out.println("\n잘못된 입력입니다. 다시 선택해주세요.");
                     }
                 }
                 return true;
             }
         }
-        System.out.println("해당 예약을 찾을 수 없습니다.");
+        System.out.println("\n해당 예약을 찾을 수 없습니다.");
         return false;
     }
 
+    // 특정 사용자의 예약 목록을 조회하는 메서드
     public void myReservation(Scanner sc) {
-        System.out.print("조회할 사람의 이메일을 입력하세요: ");
+        System.out.print("\n조회할 사람의 이메일을 입력하세요: ");
         String email = sc.nextLine();
         List<Reservation> userReservations = getReservationsByEmail(email);
 
         if (userReservations.isEmpty()) {
-            System.out.println("해당 이메일의 예약이 없습니다.");
+            System.out.println("\n해당 이메일의 예약이 없습니다.");
         } else {
             // 예약 목록을 날짜, 시간, 회의룸 순서로 정렬
             Collections.sort(userReservations, new Comparator<Reservation>() {
@@ -201,7 +230,7 @@ public class ReservationService {
             });
 
             // 예약 목록 출력
-            System.out.println("나의 예약 목록");
+            System.out.println("\n나의 예약 목록");
             System.out.println("------------------------------------------------------");
             System.out.println("|      날짜      |       시간      |       회의룸     |");
             System.out.println("------------------------------------------------------");
@@ -212,10 +241,12 @@ public class ReservationService {
         }
     }
 
+    // 예약 정보를 파일에 저장하는 메서드
     private void saveReservationsToFile() {
         fileUtil.writeToFileWithJackson(RESERVATIONS_FILE, reservations);
     }
 
+    // 파일에서 예약 정보를 로드하는 메서드
     private void loadReservationsFromFile() {
         List<Reservation> readReservations = fileUtil.readFromFileWithJackson(RESERVATIONS_FILE, new TypeReference<List<Reservation>>() {});
         if (readReservations == null) {
