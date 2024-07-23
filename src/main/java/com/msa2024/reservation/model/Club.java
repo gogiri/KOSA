@@ -1,4 +1,4 @@
-package com.msa2024.club.model;
+package com.msa2024.reservation.model;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;

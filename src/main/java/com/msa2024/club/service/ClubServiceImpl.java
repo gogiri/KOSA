@@ -65,8 +65,8 @@ public class ClubServiceImpl implements ClubService {
 	}
 
 	// 2.등록
-	public void makingClub(String userEmail) {
-		Scanner sc = new Scanner(System.in);
+	public void makingClub(String userEmail, Scanner scanner) {
+		Scanner sc = scanner;
 		ObjectMapper objectMapper = new ObjectMapper();
 
 		// 새로운 Club 객체 생성
@@ -134,8 +134,8 @@ public class ClubServiceImpl implements ClubService {
 	}
 
 	// 3. 삭제
-	public void deleteClub(String userEmail) {
-		Scanner sc = new Scanner(System.in);
+	public void deleteClub(String userEmail, Scanner scanner) {
+		Scanner sc = scanner;
 		ObjectMapper objectMapper = new ObjectMapper();
 
 		System.out.println("삭제할 모임 번호를 입력하세요: ");
@@ -174,9 +174,9 @@ public class ClubServiceImpl implements ClubService {
 	}
 
 	//4. 참가
-	public void addClub(String userEmail) {
+	public void addClub(String userEmail, Scanner scanner) {
 
-		Scanner sc = new Scanner(System.in);
+		Scanner sc = scanner;
 		ObjectMapper objectMapper = new ObjectMapper();
 
 		// 참가할 소모임 번호 입력
@@ -284,4 +284,28 @@ public class ClubServiceImpl implements ClubService {
 	        e.printStackTrace();
 	    }
 	}
+	
+	// 6. 소모임 목록 전체 삭제
+	public void deleteAllClubs() {
+	    ObjectMapper objectMapper = new ObjectMapper();
+
+	    try {
+	        // JSON 파일을 List<Club> 객체로 읽어옴
+	        File file = new File(CLUBFILEPATH);
+	        List<Club> clubs = objectMapper.readValue(file, new TypeReference<List<Club>>() {
+	        });
+
+	        // 목록을 비웁니다.
+	        clubs.clear();
+
+	        // 비워진 목록을 다시 JSON 파일에 씀
+	        objectMapper.writeValue(file, clubs);
+	        System.out.println("모든 모임이 성공적으로 삭제되었습니다.");
+
+	    } catch (IOException e) {
+	        System.err.println("파일 처리 중 오류 발생: " + e.getMessage());
+	        e.printStackTrace();
+	    }
+	}
+
 }

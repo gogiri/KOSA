@@ -19,18 +19,17 @@ public class ClubController {
 	private boolean exitRequested = false;
 	
 	// 소모임 메뉴 실행
-	public void run() {
-		Scanner sc = new Scanner(System.in);
+	public void run(Scanner scanner) {
+		Scanner sc = scanner;
 		while (true) {
-			System.out.println("\n===== 모임 =====");
-			System.out.println("[메뉴 선택]");
-			System.out.println("1. 전체 출력");
+			System.out.println("\n===== 소모임 =====");
+			System.out.println("\n1. 전체 조회");
 			System.out.println("2. 등록");
 			System.out.println("3. 삭제");
 			System.out.println("4. 참가");
-			System.out.println("5. 참여 모임 정보");
-			System.out.println("9. 종료");
-			System.out.println("메뉴를 선택하세요=>");
+			System.out.println("5. 나의 모임 정보");
+			System.out.println("6. 뒤로 가기");
+			System.out.println("\n메뉴를 선택하세요=>");
 			
 
 			String choice = sc.nextLine();
@@ -42,23 +41,23 @@ public class ClubController {
 					break;
 				case "2":
 					// 2. 등록 로직
-					cs.makingClub(loggedInUser.getEmail());
+					cs.makingClub(loggedInUser.getEmail(), sc);
 					break;
 				case "3":
 					// 3. 삭제 로직
-					cs.deleteClub(loggedInUser.getEmail());
+					cs.deleteClub(loggedInUser.getEmail(), sc);
 					break;
 				case "4":
 					// 4. 참가 로직
-					cs.addClub(loggedInUser.getEmail());
+					cs.addClub(loggedInUser.getEmail(), sc);
 					break;
 				case "5":
 					// 5. 참여 모임 정보
 					cs.printMyClub(loggedInUser.getEmail());
 					break;
-				case "9":
-					System.out.println("\n[종료]");
-					System.out.println("프로그램을 종료합니다.");
+				case "6":
+					System.out.println("\n[뒤로 가기]");
+					System.out.println("메뉴로 이동합니다1.");
 					exitRequested = true;
 					return;
 				default:
