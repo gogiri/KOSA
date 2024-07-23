@@ -45,8 +45,11 @@ public class ReservationService {
 
         // 현재 날짜와 예약 날짜 비교
         LocalDate today = LocalDate.now();
+        // 날짜 포맷터를 지정 (yyyy-MM-dd 형식)
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        // 예약 날짜 문자열을 LocalDate 객체로 변환
         LocalDate reservationLocalDate = LocalDate.parse(reservationDate, formatter);
+        // 시간의 단위를 제공하여 시간의 양을 측정
         long daysBetween = ChronoUnit.DAYS.between(today, reservationLocalDate);
 
         if (daysBetween > 7 || daysBetween < 0) {
@@ -54,11 +57,29 @@ public class ReservationService {
             return;
         }
 
+        // 예약 중복 여부 확인
+        if (isReservationConflict(roomSeq, reservationDate, startTime)) {
+            System.out.println("\n해당 날짜와 시간에 이미 예약이 존재합니다.");
+            return;
+        }
+        
         // 새로운 예약 객체 생성 및 추가
         Reservation reservation = new Reservation(roomSeq, email, telePhone, reservationDate, startTime);
         reservations.add(reservation);
         saveReservationsToFile();
         System.out.println("예약이 추가되었습니다.");
+    }
+
+        // 예약 중복 여부를 확인하는 메서드
+        private boolean isReservationConflict(int roomSeq, String reservationDate, String startTime) {
+        for (Reservation reservation : reservations) {
+            if (reservation.getRoomSeq() == roomSeq &&
+                reservation.getReservationDate().equals(reservationDate) &&
+                reservation.getStartTime().equals(startTime)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     // 예약 목록을 출력하는 메서드
@@ -103,7 +124,7 @@ public class ReservationService {
         String email = sc.nextLine();
         System.out.print("수정할 회의실 번호를 입력하세요(1~3): ");
         int roomSeq = sc.nextInt();
-        sc.nextLine(); // 개행 문자 소비
+        sc.nextLine();
 
         System.out.print("수정할 회의실 날짜를 입력하세요: ");
         String date = sc.nextLine();
@@ -112,12 +133,12 @@ public class ReservationService {
         for (Reservation reservation : reservations) {
             if (reservation.getEmail().equals(email) && reservation.getRoomSeq() == roomSeq
                     && reservation.getReservationDate().equals(date)) {
-                System.out.print("새 이메일을 입력하세요: ");
+                System.out.print("이메일을 입력하세요: ");
                 String newEmail = sc.nextLine();
                 System.out.print("새 회의실 번호를 입력하세요: ");
                 int newRoom = sc.nextInt();
-                sc.nextLine(); // 개행 문자 소비
-                System.out.print("새 전화번호를 입력하세요: ");
+                sc.nextLine();
+                System.out.print("전화번호를 입력하세요: ");
                 String newTelePhone = sc.nextLine();
                 System.out.print("새 예약 날짜를 입력하세요 (예: 2023-07-01): ");
                 String newDate = sc.nextLine();
