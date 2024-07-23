@@ -138,7 +138,7 @@ public class ClubServiceImpl implements ClubService {
 		Scanner sc = scanner;
 		ObjectMapper objectMapper = new ObjectMapper();
 
-		System.out.println("삭제할 모임 번호를 입력하세요: ");
+		System.out.println("탈퇴퇴할 모임 번호를 입력하세요: ");
 		int clubNumberToDelete = sc.nextInt();
 
 		try {
@@ -162,9 +162,9 @@ public class ClubServiceImpl implements ClubService {
 			if (found) {
 				// 삭제된 목록을 다시 JSON 파일에 씀
 				objectMapper.writeValue(file, clubs);
-				System.out.println("모임이 성공적으로 삭제되었습니다.");
+				System.out.println("모임이 성공적으로 탈퇴되었습니다.");
 			} else {
-				System.out.println("해당 번호의 모임이 존재하지 않거나, 삭제 권한이 없습니다.");
+				System.out.println("해당 번호의 모임이 존재하지 않거나, 탈퇴 권한이 없습니다.");
 			}
 
 		} catch (IOException e) {
