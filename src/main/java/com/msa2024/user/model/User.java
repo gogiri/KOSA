@@ -128,7 +128,6 @@ public class User {
 
   public boolean isBlocked() {
     boolean result = blocked;
-    System.out.println("isBlocked() called for user " + email + ": " + result + " (blocked=" + blocked + ", blockDate=" + blockDate + ")");
     return result;
   }
 

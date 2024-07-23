@@ -10,8 +10,8 @@ import com.msa2024.user.model.User;
 import com.msa2024.util.DateUtil;
 
 public class Club{
-	
-	
+
+
 	@JsonProperty("clubNumber")
 	private int clubNumber;			//1. 방 번호
 
@@ -29,7 +29,7 @@ public class Club{
 
 	@JsonProperty("matchDate")		//6. 소모임 날짜(고정)
 	private String matchDate = DateUtil.getCurrentDateTime().substring(0, 10);
-	
+
 	@JsonProperty("matchTime")
 	private String matchTime;		//7. 소모임 시간
 
@@ -39,10 +39,10 @@ public class Club{
 	@JsonProperty("isDelivery")
 	private String isDelivery;		//9. 배달 여부
 
-	
+
 	// Club 객체 추가
 	public Club(int clubNumber, String userEmail, String menuType, String matchName, int matchMaxSize, String matchTime, String matchPlace,
-			String isDelivery) {
+				String isDelivery) {
 		this.email = userEmail;
 		this.clubNumber = clubNumber;
 		this.menuType = menuType;
@@ -53,9 +53,9 @@ public class Club{
 		this.isDelivery = isDelivery;
 	}
 	public Club() {
-		
+
 	}
-	
+
 	//getter & setter
 	public int getClubNumber() {
 		return clubNumber;
@@ -128,5 +128,5 @@ public class Club{
 		this.email = email;
 	}
 
-	
+
 }

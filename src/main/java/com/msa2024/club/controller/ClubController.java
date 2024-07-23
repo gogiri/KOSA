@@ -8,16 +8,16 @@ import com.msa2024.user.model.User;
 public class ClubController {
 	User loggedInUser;								// email을 불러오기 위한 loggeInUser
 	ClubServiceImpl cs = new ClubServiceImpl();
-	
-	
+
+
 	// loggerdInUser 불러온 후 객체에 저장
 	public ClubController(User loggedInUser) {
 		this.loggedInUser = loggedInUser;
 	}
-	
+
 	// 메뉴 전환을 위한 boolean
 	private boolean exitRequested = false;
-	
+
 	// 소모임 메뉴 실행
 	public void run(Scanner scanner) {
 		Scanner sc = scanner;
@@ -25,12 +25,12 @@ public class ClubController {
 			System.out.println("\n===== 소모임 =====");
 			System.out.println("\n1. 전체 조회");
 			System.out.println("2. 등록");
-			System.out.println("3. 탈퇴퇴");
+			System.out.println("3. 삭제");
 			System.out.println("4. 참가");
 			System.out.println("5. 나의 모임 정보");
 			System.out.println("6. 뒤로 가기");
 			System.out.println("\n메뉴를 선택하세요=>");
-			
+
 
 			String choice = sc.nextLine();
 
