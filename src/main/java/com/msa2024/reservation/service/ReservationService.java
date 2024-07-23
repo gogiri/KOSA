@@ -1,5 +1,6 @@
 package com.msa2024.reservation.service;
 
+import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.Scanner;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.msa2024.reservation.model.Reservation;
 import com.msa2024.util.GenericFileUtil;
 
