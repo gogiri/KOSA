@@ -7,6 +7,7 @@ import com.msa2024.user.model.UserManager;
 import com.msa2024.user.service.UserService;
 
 import java.util.Scanner;
+import java.util.InputMismatchException;
 
 public class AdminController {
     private boolean exitRequested = false;
@@ -40,10 +41,15 @@ public class AdminController {
                 case "2":
                     System.out.print("차단할 사용자 이메일: ");
                     String blockEmail = sc.nextLine();
-                    System.out.print("차단할 시간(시간 단위): ");
-                    int hours = sc.nextInt();
-                    sc.nextLine();
-                    adminService.blockUser(blockEmail, hours);
+                    try {
+                        System.out.print("차단할 시간(시간 단위): ");
+                        int hours = sc.nextInt();
+                        sc.nextLine();
+                        adminService.blockUser(blockEmail, hours);
+                    } catch (InputMismatchException e) {
+                        System.out.println("유효한 숫자를 입력하세요.");
+                        sc.nextLine(); // 잘못된 입력을 버립니다.
+                    }
                     break;
                 case "3":
                     System.out.print("차단 해제할 사용자 이메일: ");

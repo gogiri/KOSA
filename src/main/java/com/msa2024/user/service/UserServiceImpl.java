@@ -159,10 +159,10 @@ public class UserServiceImpl implements UserService {
   public void saveBlockUsers() {
     List<User> userList = new ArrayList<>(users.values());
     fileUtil.writeToFileWithJackson(USERS_FILE, userList);
-    System.out.println("saveBlockUsers called. Current user list:");
-    for (User user : userList) {
-      System.out.println(user);
-    }
+    //System.out.println("saveBlockUsers called. Current user list:");
+//    for (User user : userList) {
+//      System.out.println(user);
+//    }
   }
 
   public boolean isUserBlocked(String email) {

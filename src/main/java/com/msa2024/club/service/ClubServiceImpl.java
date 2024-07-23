@@ -140,12 +140,12 @@ public class ClubServiceImpl implements ClubService {
 
 		System.out.println("삭제할 모임 번호를 입력하세요: ");
 		int clubNumberToDelete = sc.nextInt();
+		sc.nextLine(); // 개행 문자 제거
 
 		try {
 			// JSON 파일을 List<Club> 객체로 읽어옴
 			File file = new File(CLUBFILEPATH);
-			List<Club> clubs = objectMapper.readValue(file, new TypeReference<List<Club>>() {
-			});
+			List<Club> clubs = objectMapper.readValue(file, new TypeReference<List<Club>>() {});
 
 			// Iterator를 사용하여 목록을 순회하며 소모임 삭제
 			Iterator<Club> iterator = clubs.iterator();

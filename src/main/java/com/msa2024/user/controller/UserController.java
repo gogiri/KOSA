@@ -41,9 +41,10 @@ UserController {
             if (loggedInUser.isBlocked()) {
                 System.out.println("이 사용자는 차단되었습니다. 로그인할 수 없습니다.");
                 loggedInUser = null;
-            } else {
-                System.out.println("\n[INFO] " + loggedInUser.getName() + "님 환영합니다!");
             }
+//            else {
+//                System.out.println("\n[INFO] " + loggedInUser.getName() + "님 환영합니다!");
+//            }
         } else {
             System.out.println("로그인 실패! 이메일이나 비밀번호를 확인하세요.");
         }

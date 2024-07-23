@@ -160,7 +160,7 @@ public class Main {
                             loggedInUser = null;
                         } else {
                             Role role = loggedInUser.getRole();
-                            System.out.println("로그인한 사용자 역할: " + role);
+//                            System.out.println("로그인한 사용자 역할: " + role);
                             if (role == Role.USER || role == Role.STUDENT) {
                                 state = ProgramState.USER_MENU;
                             } else if (role == Role.ADMIN) {
