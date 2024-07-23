@@ -25,7 +25,7 @@ public class ClubController {
 			System.out.println("\n===== 소모임 =====");
 			System.out.println("\n1. 전체 조회");
 			System.out.println("2. 등록");
-			System.out.println("3. 탈퇴퇴");
+			System.out.println("3. 삭제");
 			System.out.println("4. 참가");
 			System.out.println("5. 나의 모임 정보");
 			System.out.println("6. 뒤로 가기");
